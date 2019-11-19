@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://211.229.141.131:8080/janiwss/websocket");
+        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://61.80.226.7:8080/janiwss/websocket");
         resetSubscriptions();
         stompConnect();
 
