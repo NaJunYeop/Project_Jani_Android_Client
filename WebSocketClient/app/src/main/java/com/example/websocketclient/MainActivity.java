@@ -4,10 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.example.websocketclient.models.MessageModel;
+import com.google.gson.Gson;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,7 +31,7 @@ import ua.naiksoftware.stomp.dto.StompHeader;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button send_btn;
+    private Button register_btn;
 
     private List<String> mDataSet = new ArrayList<>();
 
@@ -43,16 +47,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://61.80.226.7:8080/janiwss/websocket");
+        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://192.168.43.213:8080/janiwss/websocket");
         resetSubscriptions();
         stompConnect();
 
-        send_btn = (Button)findViewById(R.id.send_btn);
-        send_btn.setOnClickListener(new Button.OnClickListener() {
+        register_btn = (Button)findViewById(R.id.register_btn);
+        register_btn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sendEchoViaStomp();
-                toast("After Send Message!");
             }
         });
         //stompDisconnect();
@@ -116,7 +119,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendEchoViaStomp() {
-        mCompositeDisposable.add(mStompClient.send("/app/end", "Hello From Android")
+        Gson gson = new Gson();
+        MessageModel mMessageModel = new MessageModel.Builder("나준엽", "010-2604-7521")
+                .setEmail("nnjy1992@naver.com")
+                .build();
+        String json = gson.toJson(mMessageModel);
+        mCompositeDisposable.add(mStompClient.send("/app/db-register", json)
                 .compose(applySchedulers())
                 .subscribe(() -> {
                     Log.d(TAG, "STOMP echo send successfully");
