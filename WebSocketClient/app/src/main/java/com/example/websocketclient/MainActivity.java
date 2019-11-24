@@ -2,32 +2,27 @@ package com.example.websocketclient;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.CompletableTransformer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
-import ua.naiksoftware.stomp.dto.StompCommand;
 import ua.naiksoftware.stomp.dto.StompHeader;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button send_btn;
+    private Button register_btn;
 
     private List<String> mDataSet = new ArrayList<>();
 
@@ -43,18 +38,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://61.80.226.7:8080/janiwss/websocket");
+        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://" + ServerModel.SERVER_IP + ":" + ServerModel.SERVER_PORT + "/janiwss/websocket");
         resetSubscriptions();
         stompConnect();
-
-        send_btn = (Button)findViewById(R.id.send_btn);
-        send_btn.setOnClickListener(new Button.OnClickListener() {
+        /*
+        register_btn = (Button)findViewById(R.id.register_btn);
+        register_btn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sendEchoViaStomp();
-                toast("After Send Message!");
             }
         });
+        */
         //stompDisconnect();
         //toast("After STOMP Disconnection!");
     }
