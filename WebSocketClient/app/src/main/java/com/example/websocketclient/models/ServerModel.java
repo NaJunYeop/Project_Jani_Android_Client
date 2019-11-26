@@ -1,19 +1,15 @@
-package com.example.websocketclient;
+package com.example.websocketclient.models;
 
-import android.net.Network;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 public class ServerModel {
@@ -28,8 +24,10 @@ public class ServerModel {
     private URL url;
     private Gson gson;
 
+    // Singleton Pattern
+    // Initialization on demand holder idiom
     private static class LazyHolder {
-        public static final ServerModel INSTANCE = new ServerModel();
+        private static final ServerModel instance = new ServerModel();
     }
 
     private ServerModel() {
@@ -37,7 +35,7 @@ public class ServerModel {
     }
 
     public static ServerModel getInstance() {
-        return LazyHolder.INSTANCE;
+        return LazyHolder.instance;
     }
 
     public String requestHttpPost(String requestAdder, String requestJson) {

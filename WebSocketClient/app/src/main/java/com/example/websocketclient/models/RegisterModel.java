@@ -1,4 +1,4 @@
-package com.example.websocketclient.Models;
+package com.example.websocketclient.models;
 
 public class RegisterModel {
     private String userName;

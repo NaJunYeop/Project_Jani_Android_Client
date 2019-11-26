@@ -1,12 +1,14 @@
-package com.example.websocketclient;
+package com.example.websocketclient.views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.example.websocketclient.models.ServerModel;
+import com.example.websocketclient.R;
 
 import java.util.ArrayList;
 import java.util.List;
