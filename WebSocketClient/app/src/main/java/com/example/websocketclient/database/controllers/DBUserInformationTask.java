@@ -1,5 +1,6 @@
 package com.example.websocketclient.database.controllers;
-
+//main 쓰레드에서 DB접근 connection x 다른 thread에서 건드려야한다
+//Thread
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -56,10 +57,12 @@ public class DBUserInformationTask extends AsyncTask<Void, Void, List<UserInform
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-    }
+    }//main thread에서 동작
+    //UI 에서 동작
 
     @Override
-    protected void onPostExecute(List<UserInformation> userInformations) {
+    protected void onPostExecute(List<UserInformation> userInformations) {//Dinbackground에서 처리된게
+        //mainthread에서 동작
         super.onPostExecute(userInformations);
         if (command.equals("isUserExist")) {
             if (userInformations.size() == 0) {
@@ -74,12 +77,12 @@ public class DBUserInformationTask extends AsyncTask<Void, Void, List<UserInform
     }
 
     @Override
-        protected List<UserInformation> doInBackground(Void... voids) {
+        protected List<UserInformation> doInBackground(Void... voids) {//background에서 실행할 것들
             if (command.equals("isUserExist")) {
                 return db.userDao().isUserExist();
             }
             if (command.equals("insertUserName")) {
-                UserInformation userinformation = new UserInformation();
+                UserInformation userinformation = new UserInformation();//onPostExecute로 보낸다.
                 List<UserInformation> retList = new ArrayList<>();
 
                 userinformation.setUserName(userName);

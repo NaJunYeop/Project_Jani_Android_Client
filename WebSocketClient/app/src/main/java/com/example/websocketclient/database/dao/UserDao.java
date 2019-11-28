@@ -8,7 +8,7 @@ import androidx.room.Query;
 import com.example.websocketclient.database.entity.UserInformation;
 
 import java.util.List;
-
+//User 쿼리
 @Dao
 public interface UserDao {
 

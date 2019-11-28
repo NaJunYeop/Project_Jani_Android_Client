@@ -1,9 +1,11 @@
 package com.example.websocketclient.views;
-
+//채팅방 친구목록, 일정,
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -23,8 +25,8 @@ import ua.naiksoftware.stomp.StompClient;
 import ua.naiksoftware.stomp.dto.StompHeader;
 
 public class MainActivity extends AppCompatActivity {
-
-    private Button register_btn;
+//레지스터 버튼 register_btn  -> btnRegister로 변경 yj
+    private Button btnRegister;
 
     private List<String> mDataSet = new ArrayList<>();
 
@@ -42,19 +44,31 @@ public class MainActivity extends AppCompatActivity {
 
         mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://" + ServerModel.SERVER_IP + ":" + ServerModel.SERVER_PORT + "/janiwss/websocket");
         resetSubscriptions();
-        stompConnect();
-        /*
-        register_btn = (Button)findViewById(R.id.register_btn);
-        register_btn.setOnClickListener(new Button.OnClickListener() {
+
+
+
+        ////////////////////////////
+        //레지스터 버튼 코드 yj
+        btnRegister = (Button)findViewById(R.id.btnRegister);
+        btnRegister.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                sendEchoViaStomp();
+                sendEchoViaStomp();             //이건 무엇일까 yj
+                Intent in = new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(in);
+                //registerActivity로 넘긴후에 chatroom으로 이동하게 코드 짤 예정 yj
+
             }
         });
-        */
+        //레지스터 버튼
+        ///////////////////////////
+
+
         //stompDisconnect();
         //toast("After STOMP Disconnection!");
     }
+
+
 
     public void toast(String text) {
         Log.i(TAG, text);

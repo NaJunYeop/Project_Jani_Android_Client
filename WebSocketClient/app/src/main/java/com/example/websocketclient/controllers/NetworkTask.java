@@ -1,5 +1,5 @@
 package com.example.websocketclient.controllers;
-
+//통신
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -13,7 +13,7 @@ import com.example.websocketclient.models.ServerModel;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-public class NetworkTask extends AsyncTask<Void, Void, String> {
+public class NetworkTask extends AsyncTask<Void, Void, String> {//HTTP통신하는 곳
     private Context context;
     private ServerModel serverModel;
     private String requestType;

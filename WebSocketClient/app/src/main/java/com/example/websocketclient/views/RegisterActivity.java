@@ -1,5 +1,5 @@
 package com.example.websocketclient.views;
-
+//로그인 액티비티 회원 계정생성
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
