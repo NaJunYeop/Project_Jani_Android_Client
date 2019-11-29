@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "user_information")
+
 public class UserInformation {
     @PrimaryKey(autoGenerate = true)
     private int uid;

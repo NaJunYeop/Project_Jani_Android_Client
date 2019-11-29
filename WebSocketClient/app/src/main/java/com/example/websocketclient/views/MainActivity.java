@@ -25,9 +25,9 @@ import ua.naiksoftware.stomp.StompClient;
 import ua.naiksoftware.stomp.dto.StompHeader;
 
 public class MainActivity extends AppCompatActivity {
-//레지스터 버튼 register_btn  -> btnRegister로 변경 yj
-    private Button btnRegister;
-
+//레지스터 버튼 기존 UI의 btnRegister -> register_btn 로 변경 yj
+    private Button register_btn;
+    private Button btnLogin;
     private List<String> mDataSet = new ArrayList<>();
 
     private static final String TAG = "MainActivity";
@@ -48,20 +48,36 @@ public class MainActivity extends AppCompatActivity {
 
 
         ////////////////////////////
-        //레지스터 버튼 코드 yj
-        btnRegister = (Button)findViewById(R.id.btnRegister);
-        btnRegister.setOnClickListener(new View.OnClickListener(){
+        //레지스터 버튼 코드 yj 시작
+        register_btn = (Button)findViewById(R.id.register_btn);
+        register_btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 sendEchoViaStomp();             //이건 무엇일까 yj
+
                 Intent in = new Intent(MainActivity.this, RegisterActivity.class);
                 startActivity(in);
                 //registerActivity로 넘긴후에 chatroom으로 이동하게 코드 짤 예정 yj
 
             }
         });
-        //레지스터 버튼
+        //레지스터 버튼 끝
+
         ///////////////////////////
+
+        //로그인 버튼 시작 yj
+        btnLogin = (Button)findViewById(R.id.btnLogin);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "LOGIN", Toast.LENGTH_SHORT).show();
+                Intent ChatRoom = new Intent(MainActivity.this, ChatActivity.class);
+                startActivity(ChatRoom);
+            }
+        });
+
+        //로그인 버튼 끝
+        ////////////////////////////////////
 
 
         //stompDisconnect();

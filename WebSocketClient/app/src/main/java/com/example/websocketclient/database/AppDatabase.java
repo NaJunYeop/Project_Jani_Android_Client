@@ -12,6 +12,7 @@ import com.example.websocketclient.database.dao.UserDao;
 import com.example.websocketclient.database.entity.FriendInformation;
 import com.example.websocketclient.database.entity.UserInformation;
 
+//유튜브에서 UserInformation = Todo yj
 @Database(entities = {UserInformation.class/*, FriendInformation.class*/}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {    //Primary Key 각각 User,Friend InFo 클래스에서 선언
 
