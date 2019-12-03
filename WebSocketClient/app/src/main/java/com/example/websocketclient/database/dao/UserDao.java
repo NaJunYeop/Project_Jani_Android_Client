@@ -9,17 +9,25 @@ import com.example.websocketclient.database.entity.UserInformation;
 
 import java.util.List;
 
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
+
 @Dao
 public interface UserDao {
 
     @Query("SELECT * FROM user_information")
-    List<UserInformation> isUserExist();
+    Maybe<UserInformation> isUserExist();
 
+    /*
     @Query("SELECT * FROM user_information WHERE user_name = :userName")
     UserInformation findByName(String userName);
+    */
+
+    @Query("DELETE FROM user_information")
+    Completable deleteAll();
 
     @Insert
-    void insertUserName(UserInformation userInformation);
+    Completable insertUserName(UserInformation userInformation);
 
     @Delete
     void delete(UserInformation userInformation);

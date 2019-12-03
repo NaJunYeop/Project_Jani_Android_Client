@@ -1,4 +1,6 @@
-package com.example.websocketclient.models;
+package com.example.websocketclient.retrofit.models;
+
+import com.example.websocketclient.models.Buildable;
 
 public class RegisterModel {
     private String userName;
@@ -33,6 +35,18 @@ public class RegisterModel {
         this.userName = builder.userName;
         this.phoneNumber = builder.phoneNumber;
         this.email = builder.email;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getUserName() {
