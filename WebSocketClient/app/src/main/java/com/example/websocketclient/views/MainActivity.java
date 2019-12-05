@@ -2,9 +2,12 @@ package com.example.websocketclient.views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.websocketclient.models.ServerModel;
@@ -25,6 +28,10 @@ import ua.naiksoftware.stomp.dto.StompHeader;
 public class MainActivity extends AppCompatActivity {
 
     private Button register_btn;
+    EditText etID;
+    EditText etPassword;
+    String stID;
+    String stPassword;
 
     private List<String> mDataSet = new ArrayList<>();
 
@@ -39,6 +46,43 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+       /////// /////Yj register
+        etID = (EditText)findViewById(R.id.etID);
+        etPassword = (EditText)findViewById(R.id.etPassword);
+
+
+        Button btnRegister = (Button) findViewById(R.id.btnRegister);
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {//btnRegister 클릭시 발생
+
+                stID = etID.getText().toString();
+                stPassword = etPassword.getText().toString();
+
+                Toast.makeText(MainActivity.this,"Register",Toast.LENGTH_SHORT).show();
+
+                Intent in = new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(in);
+
+            }
+        });
+        ////////
+        /////// /////Yj Login
+
+        Button btnLogin = (Button) findViewById(R.id.btnLogin);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {//btnRegister 클릭시 발생
+
+                Toast.makeText(MainActivity.this,"Login",Toast.LENGTH_SHORT).show();
+
+                Intent in = new Intent(MainActivity.this, ChatActivity.class);
+                startActivity(in);
+
+            }
+        });
+        ////////
 
         mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://" + ServerModel.SERVER_IP + ":" + ServerModel.SERVER_PORT + "/janiwss/websocket");
         resetSubscriptions();
