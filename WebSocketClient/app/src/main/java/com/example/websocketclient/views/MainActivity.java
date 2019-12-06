@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.websocketclient.models.ServerModel;
@@ -24,7 +26,8 @@ import ua.naiksoftware.stomp.dto.StompHeader;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button register_btn;
+    private EditText send_edit_text;
+    private Button send_btn;
 
     private List<String> mDataSet = new ArrayList<>();
 
@@ -43,17 +46,19 @@ public class MainActivity extends AppCompatActivity {
         mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://" + ServerModel.SERVER_IP + ":" + ServerModel.SERVER_PORT + "/janiwss/websocket");
         resetSubscriptions();
         stompConnect();
-        /*
-        register_btn = (Button)findViewById(R.id.register_btn);
-        register_btn.setOnClickListener(new Button.OnClickListener() {
+
+        send_edit_text = (EditText)findViewById(R.id.send_edit_text);
+        send_btn = (Button)findViewById(R.id.send_btn);
+
+        send_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                sendEchoViaStomp();
+            public void onClick(View v) {
+                String msg = send_edit_text.getText().toString();
+                sendEchoViaStomp(msg);
+                send_edit_text.setText("");
             }
         });
-        */
         //stompDisconnect();
-        //toast("After STOMP Disconnection!");
     }
 
     public void toast(String text) {
@@ -112,8 +117,8 @@ public class MainActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public void sendEchoViaStomp() {
-        mCompositeDisposable.add(mStompClient.send("/app/end", "Hello From Android")
+    public void sendEchoViaStomp(String message) {
+        mCompositeDisposable.add(mStompClient.send("/app/end", message)
                 .compose(applySchedulers())
                 .subscribe(() -> {
                     Log.d(TAG, "STOMP echo send successfully");
