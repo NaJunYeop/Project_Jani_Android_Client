@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout 
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="registerActivity"
+            type="com.example.websocketclient.views.RegisterActivity" />
+        <variable
+            name="registerViewModel"
+            type="com.example.websocketclient.viewmodels.RegisterViewModel" />
+    </data>
+
+    <LinearLayout 
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -28,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:textSize="20sp"
+                android:text="@={registerViewModel.userNameEdit}"
                 android:hint="3-10자리의 아이디를 입력해주세요">
 
             </EditText>
@@ -36,7 +47,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="계정 생성"
-                android:textSize="25dp"/>
+                android:textSize="25dp"
+                android:onClick="@{() -> registerViewModel.registerButtonClicked()}"/>
         </LinearLayout>
 
     </LinearLayout>

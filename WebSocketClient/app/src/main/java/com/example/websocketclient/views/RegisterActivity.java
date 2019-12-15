@@ -1,205 +1,144 @@
 package com.example.websocketclient.views;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
-
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import android.content.Intent;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.websocketclient.database.AppDatabase;
 import com.example.websocketclient.database.entity.UserInformation;
-import com.example.websocketclient.retrofit.models.RegisterModel;
-import com.example.websocketclient.models.ServerModel;
+import com.example.websocketclient.databinding.ActivityRegisterBinding;
 import com.example.websocketclient.R;
-import com.example.websocketclient.retrofit.utils.RetrofitClient;
-import com.example.websocketclient.retrofit.utils.RetrofitCommunicationService;
-import com.google.gson.Gson;
-
-import java.util.List;
+import com.example.websocketclient.viewmodels.RegisterViewModel;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
-import io.reactivex.Maybe;
-import io.reactivex.MaybeObserver;
-import io.reactivex.Scheduler;
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private final String TAG = "RegisterActivityLog";
-
-    private Button register_btn;
-    private EditText user_name_edit;
-
-    private TelephonyManager telephonyManager;
-    private String user_name;
-    private RegisterModel registerModel;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private RegisterViewModel registerViewModel;
     private AppDatabase db;
-
-    private CompositeDisposable compositeDisposable;
-    private Disposable disposable;
-    private Maybe<UserInformation> maybeUserInformation;
-    private Maybe<Integer> maybeInteger;
-    private Maybe<RegisterModel> maybeRegisterModel;
     private Completable completable;
+
+    ActivityRegisterBinding activityRegisterBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        compositeDisposable = new CompositeDisposable();
-        db = AppDatabase.getInstance(this);
-
-        /*
+        // Test 하면서 SQLite User Information 삭제 할 일 있으면 밑의 주석을 없애고 실행하시오.
+        /*db = AppDatabase.getInstance(this);
         completable = db.userDao().deleteAll();
-        completable.subscribeOn(Schedulers.io())
+        completable
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposable = d;
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        if (!disposable.isDisposed()) {
-                            disposable.dispose();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                });
-        */
-
-        maybeUserInformation = db.userDao().isUserExist();
-        maybeUserInformation.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new MaybeObserver<UserInformation>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         compositeDisposable.add(d);
                     }
 
                     @Override
-                    public void onSuccess(UserInformation userInformation) {
-                        Log.i(TAG, userInformation.getUserName() + "is logged on");
-                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                        startActivity(intent);
+                    public void onComplete() {
+                        Log.i(TAG, "db deleted!!!");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.i(TAG, "db error!!!");
                     }
+                });*/
 
+        // 이 Activity(RegisterActivity)를 띄워주기 전에 먼저 SQLite DB에서 사용자를 조회한 후
+        // 사용자가 존재한다면 바로 Main Activity로 전환
+        // 사용자가 존재하지 않는다면 계정을 등록하는 Register Acitivty를 띄워준다.
+        beforeShowRegisterView();
+    }
+
+    public void beforeShowRegisterView() {
+        activityRegisterBinding = DataBindingUtil.setContentView(this, R.layout.activity_register);
+        activityRegisterBinding.setRegisterActivity(this);
+        activityRegisterBinding.setLifecycleOwner(this);
+
+        registerViewModel = new RegisterViewModel(this);
+        activityRegisterBinding.setRegisterViewModel(registerViewModel);
+
+        // SQLite DB를 조회하여 사용자가 존재하는지에 대한 Event를 ViewModel로 부터 받는다.
+        activityRegisterBinding.getRegisterViewModel().getDBSelEvent()
+                .observe(this, new Observer<UserInformation>() {
                     @Override
-                    public void onComplete() {
-                        Log.i(TAG, "Start Account Registration ...");
-                        registerAction();
+                    public void onChanged(UserInformation userInformation) {
+                        if (userInformation.getUserName().equals("ABS")) {
+                            Log.i(TAG, "There is no such a user");
+                            showRegisterView();
+                        } else {
+                            Log.i(TAG, userInformation.getUserName() + "is logged on");
+                            Toast.makeText(RegisterActivity.this, userInformation.getUserName(), Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                });
+        activityRegisterBinding.getRegisterViewModel().checkUserExist();
+    }
+
+    public void showRegisterView() {
+
+        // SpringBoot Tomcat WAS(이하 Server)와 통신하여 사용자가 입력한 User Name이 사용가능한지 검사한다.
+        // EXT : Server와 연결된 MySQL에 이미 존재하는 User Name
+        activityRegisterBinding.getRegisterViewModel().getRetrofitEvent()
+                .observe(this, new Observer<String>() {
+                    @Override
+                    public void onChanged(String s) {
+                        if (s.equals("EXT")) {
+                            Log.i(TAG, "From server : Already exist user name");
+                            Toast.makeText(RegisterActivity.this, "존재하는 이름입니다.\n다른 이름을 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            // 중복된 User Name이 아닌 경우 SQLite에 저장.
+                            activityRegisterBinding.getRegisterViewModel().storeUserInformation();
+                        }
+                    }
+                });
+
+        // SQLite에 저장하고 String Event를 받아온다.
+        // SUCC이라는 String을 받았을 경우 성공적으로 SQLite에 저장되었다는 뜻이며 Main Activity로 화면을 전환한다.
+        activityRegisterBinding.getRegisterViewModel().getDBInsEvent()
+                .observe(this, new Observer<String>() {
+                    @Override
+                    public void onChanged(String s) {
+                        if (s.equals("SUCC")) {
+                            Log.i(TAG, "DB : User information successfully inserted into sqlite");
+                            Log.i(TAG, "Start Main Activity");
+                            Toast.makeText(RegisterActivity.this, "등록 완료.", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
                     }
                 });
     }
 
-    public void registerAction() {
-        setContentView(R.layout.activity_register);
-        register_btn = (Button)findViewById(R.id.register_btn);
-        user_name_edit = (EditText)findViewById(R.id.user_name_edit);
+    // Main Activity로 화면을 저장 할 경우 더 이상 이 Activity는 필요 없으므로 종료시켜 준다.
+    // finish() Method를 사용하지 않으면 Main Activity에서 뒤로가기 버튼을 눌렀을 때 바로 종료되징 않고 이 Activity가 다시 실행된다.
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
 
-        register_btn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                user_name = user_name_edit.getText().toString();
-                if (registerModel == null) {
-                    registerModel = new RegisterModel.Builder(user_name).build();
-                }
-                else {
-                    registerModel.setUserName(user_name);
-                }
-
-                maybeRegisterModel = RetrofitClient.getInstance().getUserInformation(registerModel);
-                maybeRegisterModel.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new MaybeObserver<RegisterModel>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-                                disposable = d;
-                            }
-
-                            @Override
-                            public void onSuccess(RegisterModel registerModel) {
-                                if (!disposable.isDisposed()) {
-                                    disposable.dispose();
-                                }
-                                if (registerModel.getUserName().equals("EXT")) {
-                                    user_name_edit.setText("");
-                                    Log.i(TAG, "From server : Already exist user name");
-                                    Toast.makeText(RegisterActivity.this, "존재하는 이름입니다.\n다른 이름을 입력해 주세요.", Toast.LENGTH_SHORT).show();
-                                }
-                                else {
-                                    Log.i(TAG, registerModel.getUserName() + " is logged on !!!");
-
-                                    UserInformation userInformation = new UserInformation();
-                                    userInformation.setUserName(registerModel.getUserName());
-
-                                    completable = db.userDao().insertUserName(userInformation);
-                                    completable.subscribeOn(Schedulers.io())
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .subscribe(new CompletableObserver() {
-                                                @Override
-                                                public void onSubscribe(Disposable d) {
-                                                    disposable = d;
-                                                }
-
-                                                @Override
-                                                public void onComplete() {
-                                                    if (!disposable.isDisposed()) {
-                                                        disposable.dispose();
-                                                    }
-
-                                                    Log.i(TAG, "Register to SQLite");
-                                                    Log.i(TAG, "Go to MainActivity");
-                                                    Toast.makeText(RegisterActivity.this, "등록 완료.", Toast.LENGTH_SHORT).show();
-                                                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                                                    startActivity(intent);
-                                                }
-
-                                                @Override
-                                                public void onError(Throwable e) {
-
-                                                }
-                                            });
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.i(TAG, "From server : Error occured");
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
-            }
-        });
+    // 이 Activity가 onDestroy되어서 완전히 종료 될 경우 Observable, Maybe, Completable, Single 등을 구독하고 있는 Observer들의 구독을 해지한다.
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.dispose();
     }
 }

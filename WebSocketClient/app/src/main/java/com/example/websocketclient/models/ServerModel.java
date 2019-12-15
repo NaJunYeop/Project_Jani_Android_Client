@@ -15,6 +15,7 @@ import java.net.URL;
 public class ServerModel {
     private static final String TAG = "RegisterActivity";
     public final static String SERVER_IP = "192.168.43.213";
+    //public final static String SERVER_IP = "220.122.5.36";
     public final static String SERVER_PORT = "8080";
     public final static String SERVER_URL = "http://" + SERVER_IP + ":" + SERVER_PORT;
     private HttpURLConnection httpURLConnection;

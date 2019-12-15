@@ -13,15 +13,15 @@ public class RegisterModel {
         private String email = "";
 
         public Builder(String userName) {
-            this.userName = userName;
-        }
+                this.userName = userName;
+            }
 
-        public Builder setPhoneNumber() {
-            this.phoneNumber = phoneNumber;
-            return this;
-        }
+            public Builder setPhoneNumber() {
+                this.phoneNumber = phoneNumber;
+                return this;
+            }
 
-        public Builder setEmail() {
+            public Builder setEmail() {
             this.email = email;
             return this;
         }
