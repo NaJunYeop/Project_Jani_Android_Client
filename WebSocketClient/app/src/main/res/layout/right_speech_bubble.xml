@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="position"
+            type="Integer" />
+        <variable
+            name="mainViewModel"
+            type="com.example.websocketclient.viewmodels.MainViewModel" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10sp"
+        android:padding="3sp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10sp"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="10sp"
+                    android:background="#fef01b"
+                    android:maxLength="150"
+                    android:maxLines="15"
+                    android:padding="10sp"
+                    android:textSize="15sp"
+                    android:text="@{mainViewModel.getMessageModelAt(position).contents}"/>
+
+                <TextView
+                    android:id="@+id/chatmessage2_tv_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:text="@{mainViewModel.getMessageModelAt(position).senderSideDate}"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</layout>

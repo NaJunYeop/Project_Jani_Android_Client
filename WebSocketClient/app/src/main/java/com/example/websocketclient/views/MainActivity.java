@@ -1,6 +1,10 @@
 package com.example.websocketclient.views;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,8 +13,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.websocketclient.database.entity.UserInformation;
+import com.example.websocketclient.databinding.ActivityMainBinding;
+import com.example.websocketclient.models.MessageModel;
 import com.example.websocketclient.models.ServerModel;
 import com.example.websocketclient.R;
+import com.example.websocketclient.viewmodels.MainViewModel;
+import com.example.websocketclient.views.utils.adapters.ChatRoomAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,125 +31,87 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
+import ua.naiksoftware.stomp.dto.LifecycleEvent;
 import ua.naiksoftware.stomp.dto.StompHeader;
 
 public class MainActivity extends AppCompatActivity {
-
-    private EditText send_edit_text;
-    private Button send_btn;
-
-    private List<String> mDataSet = new ArrayList<>();
+    public static UserInformation intentUserInformation;
 
     private static final String TAG = "MainActivity";
-    public static final String LOGIN = "login";
-    public static final String PASSCODE = "passcode";
 
-    private StompClient mStompClient;
-    private CompositeDisposable mCompositeDisposable;
+    private ActivityMainBinding activityMainBinding;
+    private MainViewModel mainViewModel;
+    private MessageModel messageModel;
+    private ChatRoomAdapter chatRoomAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://" + ServerModel.SERVER_IP + ":" + ServerModel.SERVER_PORT + "/janiwss/websocket");
-        resetSubscriptions();
-        stompConnect();
+        intentUserInformation = (UserInformation) getIntent().getSerializableExtra("userInfo");
 
-        send_edit_text = (EditText)findViewById(R.id.send_edit_text);
-        send_btn = (Button)findViewById(R.id.send_btn);
+        dataBindingInit();
+        stompLiveDataInit();
 
-        send_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String msg = send_edit_text.getText().toString();
-                sendEchoViaStomp(msg);
-                send_edit_text.setText("");
-            }
-        });
-        //stompDisconnect();
     }
 
-    public void toast(String text) {
-        Log.i(TAG, text);
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    public void dataBindingInit() {
+        activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        // set LifecycleOwner
+        activityMainBinding.setMainActivity(this);
+        activityMainBinding.setLifecycleOwner(this);
+
+        // Binds MainViewModel.class
+        //mainViewModel = new MainViewModel(this);
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        activityMainBinding.setMainViewModel(mainViewModel);
+
+        activityMainBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Binds ChatRoomAdapter.class
+        chatRoomAdapter = new ChatRoomAdapter(activityMainBinding.getMainViewModel());
+        activityMainBinding.setChatRoomAdapter(chatRoomAdapter);
+        activityMainBinding.recyclerView.setAdapter(chatRoomAdapter);
     }
 
-    public void stompConnect() {
+    public void stompLiveDataInit() {
+        mainViewModel.createChatRoom("/topic/greetings");
 
-        toast("Try Stomp Connection");
-        List<StompHeader> headers = new ArrayList<>();
-        headers.add(new StompHeader(LOGIN, "guest"));
-        headers.add(new StompHeader(PASSCODE, "guest"));
-
-        mStompClient.withClientHeartbeat(1000).withServerHeartbeat(1000);
-        Disposable dispLifecycle = mStompClient.lifecycle()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(lifecycleEvent -> {
-                   switch (lifecycleEvent.getType()) {
-                       case OPENED:
-                           toast("Stomp connection opened");
-                           break;
-                       case ERROR:
-                           Log.e(TAG, "Stomp connection error", lifecycleEvent.getException());
-                           toast("Stomp connection closed due to error");
-                           break;
-                       case CLOSED:
-                           toast("Stomp connection closed");
-                           break;
-                       case FAILED_SERVER_HEARTBEAT:
-                           toast("Stomp failed server heartbeat");
-                           break;
-                   }
+        // STOMP Health를 Check함.
+        mainViewModel.getStompHealthEvent()
+                .observe(this, new Observer<LifecycleEvent.Type>() {
+                    @Override
+                    public void onChanged(LifecycleEvent.Type type) {
+                        switch (type) {
+                            // STOMP Over WebSocket이
+                            case OPENED: // 성공적으로 Opened
+                                Log.i(TAG, "Stomp connection opened");
+                                break;
+                            case ERROR: // Open 실패
+                                Log.e(TAG, "Stomp connection error");
+                                break;
+                            case CLOSED: // 어떤 이유에서든 Closed 됨
+                                break;
+                            case FAILED_SERVER_HEARTBEAT: // Heartbeat를 감지할 수 없음
+                                break;
+                        }
+                    }
                 });
-        mCompositeDisposable.add(dispLifecycle);
 
-        Disposable dispTopic = mStompClient.topic("/topic/greetings")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(topicMessage -> {
-                    Log.d(TAG, "Received" + topicMessage.getPayload());
-                    toast(topicMessage.getPayload());
+        // Message Event가 발생하면 Chat Room에서 Message를 띄워줘야한다.
+        mainViewModel.getMessageEvent()
+                .observe(this, new Observer<Integer>() {
+                    @Override
+                    public void onChanged(Integer position) {
+                        activityMainBinding.recyclerView.scrollToPosition(position);
+                    }
                 });
-        mCompositeDisposable.add(dispTopic);
-        mStompClient.connect(headers);
-    }
-    public void stompDisconnect() {
-        mStompClient.disconnect();
-    }
-
-    protected CompletableTransformer applySchedulers() {
-        return upstream -> upstream
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public void sendEchoViaStomp(String message) {
-        mCompositeDisposable.add(mStompClient.send("/app/end", message)
-                .compose(applySchedulers())
-                .subscribe(() -> {
-                    Log.d(TAG, "STOMP echo send successfully");
-                }, throwable -> {
-                    Log.e(TAG, "Error send STOMP echo", throwable);
-                    toast(throwable.getMessage());
-                }));
-    }
-
-    private void resetSubscriptions() {
-        if (mCompositeDisposable != null) {
-            mCompositeDisposable.dispose();
-        }
-        mCompositeDisposable = new CompositeDisposable();
-    }
+}
 
     @Override
     protected void onDestroy() {
-        mStompClient.disconnect();
-
-        //if (mRestPingDisposable != null) mRestPingDisposable.dispose();
-        if (mCompositeDisposable != null) mCompositeDisposable.dispose();
-        super.onDestroy();
+            super.onDestroy();
     }
 }

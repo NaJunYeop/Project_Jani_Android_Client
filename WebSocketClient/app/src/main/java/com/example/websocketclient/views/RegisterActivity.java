@@ -2,7 +2,10 @@ package com.example.websocketclient.views;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ObservableField;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +31,8 @@ public class RegisterActivity extends AppCompatActivity {
     private RegisterViewModel registerViewModel;
     private AppDatabase db;
     private Completable completable;
+
+    public ObservableField<String> userNameEdit = new ObservableField<>();
 
     ActivityRegisterBinding activityRegisterBinding;
 
@@ -64,16 +69,19 @@ public class RegisterActivity extends AppCompatActivity {
         beforeShowRegisterView();
     }
 
-    public void beforeShowRegisterView() {
+    public void dataBindingInit() {
         activityRegisterBinding = DataBindingUtil.setContentView(this, R.layout.activity_register);
-        activityRegisterBinding.setRegisterActivity(this);
         activityRegisterBinding.setLifecycleOwner(this);
 
-        registerViewModel = new RegisterViewModel(this);
+        registerViewModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
         activityRegisterBinding.setRegisterViewModel(registerViewModel);
+    }
+
+    public void beforeShowRegisterView() {
+        dataBindingInit();
 
         // SQLite DB를 조회하여 사용자가 존재하는지에 대한 Event를 ViewModel로 부터 받는다.
-        activityRegisterBinding.getRegisterViewModel().getDBSelEvent()
+        registerViewModel.getDBSelEvent()
                 .observe(this, new Observer<UserInformation>() {
                     @Override
                     public void onChanged(UserInformation userInformation) {
@@ -84,18 +92,19 @@ public class RegisterActivity extends AppCompatActivity {
                             Log.i(TAG, userInformation.getUserName() + "is logged on");
                             Toast.makeText(RegisterActivity.this, userInformation.getUserName(), Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                            intent.putExtra("userInfo", userInformation);
                             startActivity(intent);
                         }
                     }
                 });
-        activityRegisterBinding.getRegisterViewModel().checkUserExist();
+        registerViewModel.checkUserExist();
     }
 
     public void showRegisterView() {
 
         // SpringBoot Tomcat WAS(이하 Server)와 통신하여 사용자가 입력한 User Name이 사용가능한지 검사한다.
         // EXT : Server와 연결된 MySQL에 이미 존재하는 User Name
-        activityRegisterBinding.getRegisterViewModel().getRetrofitEvent()
+        registerViewModel.getRetrofitEvent()
                 .observe(this, new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
@@ -105,24 +114,23 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                         else {
                             // 중복된 User Name이 아닌 경우 SQLite에 저장.
-                            activityRegisterBinding.getRegisterViewModel().storeUserInformation();
+                            registerViewModel.storeUserInformation();
                         }
                     }
                 });
 
         // SQLite에 저장하고 String Event를 받아온다.
         // SUCC이라는 String을 받았을 경우 성공적으로 SQLite에 저장되었다는 뜻이며 Main Activity로 화면을 전환한다.
-        activityRegisterBinding.getRegisterViewModel().getDBInsEvent()
-                .observe(this, new Observer<String>() {
+        registerViewModel.getDBInsEvent()
+                .observe(this, new Observer<UserInformation>() {
                     @Override
-                    public void onChanged(String s) {
-                        if (s.equals("SUCC")) {
-                            Log.i(TAG, "DB : User information successfully inserted into sqlite");
-                            Log.i(TAG, "Start Main Activity");
-                            Toast.makeText(RegisterActivity.this, "등록 완료.", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                            startActivity(intent);
-                        }
+                    public void onChanged(UserInformation userInformation) {
+                        Log.i(TAG, "DB : User information successfully inserted into sqlite");
+                        Log.i(TAG, "Start Main Activity");
+                        Toast.makeText(RegisterActivity.this, "등록 완료.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                        intent.putExtra("userInfo", userInformation);
+                        startActivity(intent);
                     }
                 });
     }
