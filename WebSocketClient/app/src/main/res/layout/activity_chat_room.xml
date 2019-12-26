@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="chatRoomAcitivty"
+            type="com.example.websocketclient.views.ChatRoomActivity" />
+        <variable
+            name="chatRoomViewModel"
+            type="com.example.websocketclient.viewmodels.ChatRoomViewModel" />
+        <variable
+            name="chatRoomAdapter"
+            type="com.example.websocketclient.views.utils.adapters.ChatRoomAdapter" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        tools:context=".views.ChatRoomActivity">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="#9bbbd4"
+            app:layout_constraintBottom_toTopOf="@+id/chat_input_msg"
+            app:layout_constraintTop_toTopOf="parent" >
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <EditText
+            android:id="@+id/chat_input_msg"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLines="2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/chat_send_msg">
+        </EditText>
+        <Button
+            android:id="@+id/chat_send_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/chat_input_msg">
+        </Button>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

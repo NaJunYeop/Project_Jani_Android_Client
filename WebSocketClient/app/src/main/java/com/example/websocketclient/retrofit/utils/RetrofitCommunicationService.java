@@ -17,4 +17,6 @@ public interface RetrofitCommunicationService {
     @POST("/user-registration")
     Maybe<RegisterModel> getUserInformation(@Body RegisterModel registerModel);
 
+    @POST("/find-user")
+    Maybe<RegisterModel> findUserInformation(@Body RegisterModel registerModel);
 }

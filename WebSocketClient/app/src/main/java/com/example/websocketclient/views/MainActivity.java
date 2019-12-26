@@ -2,9 +2,11 @@ package com.example.websocketclient.views;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewpager.widget.PagerAdapter;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -15,11 +17,14 @@ import android.widget.Toast;
 
 import com.example.websocketclient.database.entity.UserInformation;
 import com.example.websocketclient.databinding.ActivityMainBinding;
+import com.example.websocketclient.databinding.ActivityMainBindingImpl;
 import com.example.websocketclient.models.MessageModel;
+import com.example.websocketclient.models.RequestModel;
 import com.example.websocketclient.models.ServerModel;
 import com.example.websocketclient.R;
 import com.example.websocketclient.viewmodels.MainViewModel;
 import com.example.websocketclient.views.utils.adapters.ChatRoomAdapter;
+import com.example.websocketclient.views.utils.adapters.PageAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,17 +42,17 @@ import ua.naiksoftware.stomp.dto.StompHeader;
 public class MainActivity extends AppCompatActivity {
     public static UserInformation intentUserInformation;
 
-    private static final String TAG = "MainActivity";
-
+    private static final String TAG = "MainActivityLog";
     private ActivityMainBinding activityMainBinding;
     private MainViewModel mainViewModel;
-    private MessageModel messageModel;
-    private ChatRoomAdapter chatRoomAdapter;
+    private PageAdapter pageAdapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.i(TAG, "MainActivity onCreate() called()");
 
         intentUserInformation = (UserInformation) getIntent().getSerializableExtra("userInfo");
 
@@ -68,16 +73,20 @@ public class MainActivity extends AppCompatActivity {
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         activityMainBinding.setMainViewModel(mainViewModel);
 
-        activityMainBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        pageAdapter = new PageAdapter(getSupportFragmentManager(), activityMainBinding.mainTabLayout.getTabCount());
+        pageAdapter.setMainViewModel(mainViewModel);
+        activityMainBinding.mainViewPager.setAdapter(pageAdapter);
+
+        /*activityMainBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Binds ChatRoomAdapter.class
         chatRoomAdapter = new ChatRoomAdapter(activityMainBinding.getMainViewModel());
         activityMainBinding.setChatRoomAdapter(chatRoomAdapter);
-        activityMainBinding.recyclerView.setAdapter(chatRoomAdapter);
+        activityMainBinding.recyclerView.setAdapter(chatRoomAdapter);*/
     }
 
     public void stompLiveDataInit() {
-        mainViewModel.createChatRoom("/topic/greetings");
+       //mainViewModel.createChatRoom("/topic/greetings");
 
         // STOMP Health를 Check함.
         mainViewModel.getStompHealthEvent()
@@ -101,17 +110,18 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         // Message Event가 발생하면 Chat Room에서 Message를 띄워줘야한다.
-        mainViewModel.getMessageEvent()
+        /*mainViewModel.getMessageEvent()
                 .observe(this, new Observer<Integer>() {
                     @Override
                     public void onChanged(Integer position) {
                         activityMainBinding.recyclerView.scrollToPosition(position);
                     }
-                });
-}
+                });*/
+    }
 
     @Override
     protected void onDestroy() {
             super.onDestroy();
+            Log.i(TAG, "MainActivity onDestroy() called ...");
     }
 }

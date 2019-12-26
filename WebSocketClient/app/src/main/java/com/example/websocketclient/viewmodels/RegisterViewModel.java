@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.websocketclient.database.AppDatabase;
 import com.example.websocketclient.database.entity.UserInformation;
+import com.example.websocketclient.models.ModelRepository;
 import com.example.websocketclient.retrofit.models.RegisterModel;
 import com.example.websocketclient.retrofit.utils.RetrofitClient;
 import com.example.websocketclient.retrofit.utils.RetrofitCommunicationService;
@@ -34,6 +35,7 @@ public class RegisterViewModel extends AndroidViewModel {
     private RetrofitCommunicationService retrofitCommunicationService;
     private Context context;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private ModelRepository modelRepository;
 
     // MutableLiveData : setValue시 Main-Thread에서 동작하며 이를 Observe하고 있는 Observer에게 Notify
     private MutableLiveData<String> retMsgButtonClicked;
@@ -50,8 +52,8 @@ public class RegisterViewModel extends AndroidViewModel {
         // getBaseContext() : 자신의 Context가 아니라 다른 Context를 Access할 때 사용한다.
         // View.getContext() : 현재 실행되고 있는 View의 Context를 Return, this와 같다.
         this.context = application.getApplicationContext();
-        db = AppDatabase.getInstance(context);
-        retrofitCommunicationService = RetrofitClient.getInstance();
+        modelRepository = ModelRepository.getInstance();
+        modelRepository.setReferences(this.context);
     }
 
     // 초기 Observe할 MutableLiveData를 LiveData로 반환
@@ -64,9 +66,7 @@ public class RegisterViewModel extends AndroidViewModel {
     public LiveData<UserInformation> getDBSelEvent() { return isDBUserExist = new MutableLiveData<>(); }
 
     public void checkUserExist() {
-        db.userDao().isUserExist()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        modelRepository.dbGetUserInformation()
                 .subscribe(new MaybeObserver<UserInformation>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -75,6 +75,7 @@ public class RegisterViewModel extends AndroidViewModel {
 
                     @Override
                     public void onSuccess(UserInformation userInformation) {
+                        modelRepository.setCurUserInformation(userInformation);
                         isDBUserExist.setValue(userInformation);
                     }
 
@@ -95,9 +96,7 @@ public class RegisterViewModel extends AndroidViewModel {
         if (mUserInformation == null) mUserInformation = new UserInformation();
         mUserInformation.setUserName(userNameEdit.get());
 
-        db.userDao().insertUserName(mUserInformation)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        modelRepository.dbInsertUserInformation(mUserInformation)
                 .subscribe(new CompletableObserver() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -106,6 +105,7 @@ public class RegisterViewModel extends AndroidViewModel {
 
                     @Override
                     public void onComplete() {
+                        modelRepository.setCurUserInformation(mUserInformation);
                         isDBInsertSuccess.setValue(mUserInformation);
                     }
 
@@ -123,9 +123,7 @@ public class RegisterViewModel extends AndroidViewModel {
             registerModel.setUserName(userNameEdit.get());
         }
 
-        retrofitCommunicationService.getUserInformation(registerModel)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        modelRepository.retrofitGetUserInformation(registerModel)
                 .subscribe(new MaybeObserver<RegisterModel>() {
                     @Override
                     public void onSubscribe(Disposable d) {

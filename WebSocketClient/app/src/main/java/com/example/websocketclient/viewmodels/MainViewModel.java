@@ -4,68 +4,87 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.websocketclient.database.entity.UserInformation;
+import com.example.websocketclient.models.ChatRoomModel;
+import com.example.websocketclient.models.FriendModel;
 import com.example.websocketclient.models.MessageModel;
-import com.example.websocketclient.models.ServerModel;
+import com.example.websocketclient.models.ModelRepository;
+import com.example.websocketclient.models.RequestModel;
 import com.example.websocketclient.views.MainActivity;
 import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
-import io.reactivex.CompletableTransformer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.MaybeObserver;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 import ua.naiksoftware.stomp.dto.LifecycleEvent;
-import ua.naiksoftware.stomp.dto.StompHeader;
 
-public class MainViewModel extends AndroidViewModel {
+public class MainViewModel extends AndroidViewModel implements Serializable {
     private final String TAG = "MainViewModelLog";
     public static final String LOGIN = "login";
     public static final String PASSCODE = "passcode";
+    public static final String ACK = "ACK";
+    public static final String WAIT = "WAIT";
 
     private Context context;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private StompClient mStompClient;
     private UserInformation userInformation = new UserInformation();
+    private ModelRepository modelRepository;
     public MessageModel sMessageModel;
     public MessageModel rMessageModel;
+
 
     public ObservableField<String> messageEdit = new ObservableField<>();
 
     private MutableLiveData<LifecycleEvent.Type> stompHealthEvent;
     private MutableLiveData<Integer> positionEvent;
+    private MutableLiveData<Integer> friendListFragmentButtonEvent;
+
+    private MutableLiveData<Boolean> requestChannelEvent;
+    private MutableLiveData<MessageModel> queueChannelEvent;
+    private MutableLiveData<MessageModel> topicChannelEvent;
 
     private ArrayList<MessageModel> messageModels = new ArrayList<>();
-
     private Gson gson = new Gson();
 
     public MainViewModel(@NonNull Application application) {
         super(application);
+        this.context = application.getApplicationContext();
+
+        Log.i(TAG, "MainViewModel Constructor");
 
         // getApplicationContext() : LiftCycle을 가지는 Context
         // getBaseContext() : 자신의 Context가 아니라 다른 Context를 Access할 때 사용한다.
         // View.getContext() : 현재 실행되고 있는 View의 Context를 Return, this와 같다.
-        this.context = application.getApplicationContext();
-        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://" + ServerModel.SERVER_IP + ":" + ServerModel.SERVER_PORT + "/janiwss/websocket");
+        modelRepository = ModelRepository.getInstance();
+        modelRepository.setReferences(context);
+
+        createRequestChannel();
         stompConnect();
+    }
+
+    public ModelRepository getModelRepository() {
+        return this.modelRepository;
     }
 
     public ArrayList<MessageModel> getChatAdapterArrayList() {
         return messageModels;
+    }
+
+    public LiveData<Integer> getFriendListFragmentButtonEvent() {
+        return friendListFragmentButtonEvent = new MutableLiveData<>();
     }
 
     public LiveData<LifecycleEvent.Type> getStompHealthEvent() {
@@ -76,15 +95,13 @@ public class MainViewModel extends AndroidViewModel {
         return positionEvent = new MutableLiveData<>();
     }
 
-    public void stompConnect() {
-        List<StompHeader> headers = new ArrayList<>();
-        headers.add(new StompHeader(LOGIN, "guest"));
-        headers.add(new StompHeader(PASSCODE, "guest"));
+    public LiveData<Boolean> getRequestChannelEvent() {
+        return requestChannelEvent = new MutableLiveData<>();
+    }
 
-        mStompClient.withClientHeartbeat(1000).withServerHeartbeat(1000);
-        compositeDisposable.add(mStompClient.lifecycle()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+    public void stompConnect() {
+        Log.i(TAG, "2 : Second");
+        compositeDisposable.add(modelRepository.stompGetStompClientLifecycle()
                 .subscribe(lifecycleEvent -> {
                     switch (lifecycleEvent.getType()) {
                         case OPENED:
@@ -101,7 +118,7 @@ public class MainViewModel extends AndroidViewModel {
                     stompHealthEvent.setValue(lifecycleEvent.getType());
                 })
         );
-        mStompClient.connect(headers);
+        modelRepository.stompConnectStart();
     }
 
     public void stompDisconnect() {
@@ -109,13 +126,42 @@ public class MainViewModel extends AndroidViewModel {
        mStompClient.disconnect();
     }
 
+    public void createRequestChannel() {
+        Log.i(TAG, "3 : Third");
+        Toast.makeText(context, modelRepository.getCurUserInformation().getUserName(), Toast.LENGTH_LONG).show();
+        compositeDisposable.add(modelRepository.stompGetTopicMessage("/req/" + modelRepository.getCurUserInformation().getUserName())
+                .subscribe(topicMessage -> {
+                    // Json Parsing Needed.
+                    RequestModel requestModel = gson.fromJson(topicMessage.getPayload(), RequestModel.class);
+                    if (requestModel.getStatus().equals("REQ")) {
+                        modelRepository.addRequestModel(gson.fromJson(topicMessage.getPayload(), RequestModel.class));
+                    }
+                    else if (requestModel.getStatus().equals("ACK")) {
+                        FriendModel friendModel = new FriendModel(requestModel.getReceiverName());
+                        modelRepository.addFriendList(friendModel);
+                    }
+                    /*rMessageModel = gson.fromJson(topicMessage.getPayload(), MessageModel.class);
+                    messageModels.add(rMessageModel);
+                    Log.d(TAG, "Received : " + rMessageModel.getContents());
+                    positionEvent.setValue(messageModels.size() - 1)*/;
+                })
+        );
+    }
+
+    public void createQueueChannel() {
+        createChatRoom("/queue/" + modelRepository.getCurUserInformation().getUserName());
+
+    }
+
+    public void createTopicChannel() {
+        createChatRoom("/topic/" + modelRepository.getCurUserInformation().getUserName());
+    }
+
     public void createChatRoom(String topic)
     {
         // /topic/greetings에 가입하면 해당 Chat Room에 대한 Event, 즉, Message들을 .subscribe에서 받아온다.
         // compositeDisposable.add(mStompClient.topic("/topic/greetings")
-        compositeDisposable.add(mStompClient.topic(topic)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        compositeDisposable.add(modelRepository.stompGetTopicMessage(topic)
                 .subscribe(topicMessage -> {
                     // Json Parsing Needed.
                     rMessageModel = gson.fromJson(topicMessage.getPayload(), MessageModel.class);
@@ -130,8 +176,7 @@ public class MainViewModel extends AndroidViewModel {
         return messageModels.get(position);
     }
 
-    public void sendButtonClikced()
-    {
+    public void sendButtonClikced() {
         if (sMessageModel == null) sMessageModel = new MessageModel();
 
         sMessageModel.setSenderName(MainActivity.intentUserInformation.getUserName());
@@ -140,21 +185,12 @@ public class MainViewModel extends AndroidViewModel {
         sMessageModel.setSenderSideDate("2019/12/16");
         messageEdit.set("");
 
-        compositeDisposable.add(mStompClient.send("/app/end", gson.toJson(sMessageModel))
-                .compose(applySchedulers())
+        compositeDisposable.add(modelRepository.stompSendMessage("/app/end", gson.toJson(sMessageModel))
                 .subscribe(() -> {
                     Log.d(TAG, "STOMP echo send successfully");
                 }, throwable -> {
                     Log.e(TAG, "Error send STOMP echo", throwable);
                 }));
-    }
-
-    // 아마 App이 다른 Thread에서 뭔가가 동작하고 있다고 해도 Message를 Send할 수 있게 조치를 취하는 것 인 듯.
-    protected CompletableTransformer applySchedulers() {
-        return upstream -> upstream
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
     }
 
     private void resetSubscriptions() {
@@ -168,7 +204,8 @@ public class MainViewModel extends AndroidViewModel {
     protected void onCleared() {
         super.onCleared();
         compositeDisposable.dispose();
-        stompDisconnect(); // 과연 Disconnect 해야 하는가? 에 대한 이해는 조금 더 해 봐야 알 듯.
+        Log.i(TAG, "onCleared() Method is called ......................");
+        //modelRepository.stompDisconnectStart(); // 과연 Disconnect 해야 하는가? 에 대한 이해는 조금 더 해 봐야 알 듯.
     }
 }
 
