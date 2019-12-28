@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.websocketclient.R;
 import com.example.websocketclient.databinding.FragmentChatRoomListBinding;
+import com.example.websocketclient.databinding.FragmentChatRoomListUnitBinding;
 import com.example.websocketclient.viewmodels.MainViewModel;
 import com.example.websocketclient.views.utils.adapters.ChatRoomListAdapter;
 

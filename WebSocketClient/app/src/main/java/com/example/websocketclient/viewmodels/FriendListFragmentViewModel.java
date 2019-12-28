@@ -28,10 +28,12 @@ public class FriendListFragmentViewModel extends AndroidViewModel {
     private ModelRepository modelRepository;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private Gson gson = new Gson();
+
     public ObservableBoolean isLoading = new ObservableBoolean();
 
     private MutableLiveData<Boolean> refreshEvent;
     private MutableLiveData<Integer> buttonEvent;
+    private MutableLiveData<Boolean> profileEvent;
 
     public FriendListFragmentViewModel(@NonNull Application application) {
         super(application);
@@ -48,6 +50,10 @@ public class FriendListFragmentViewModel extends AndroidViewModel {
         return buttonEvent = new MutableLiveData<>();
     }
 
+    public LiveData<Boolean> getProfileEvent() {
+        return profileEvent = new MutableLiveData<>();
+    }
+
     public ModelRepository getModelRepository() {
         return this.modelRepository;
     }
@@ -59,11 +65,16 @@ public class FriendListFragmentViewModel extends AndroidViewModel {
                     // Json Parsing Needed.
                     RequestModel requestModel = gson.fromJson(topicMessage.getPayload(), RequestModel.class);
                     if (requestModel.getStatus().equals("REQ")) {
-                        modelRepository.addRequestModel(gson.fromJson(topicMessage.getPayload(), RequestModel.class));
+                        modelRepository.getRequestModelHashMap().put(requestModel.getSenderName(), requestModel);
+                        modelRepository.getRequestModelList().add(requestModel);
+                        //modelRepository.addRequestModel(gson.fromJson(topicMessage.getPayload(), RequestModel.class));
                     }
                     else if (requestModel.getStatus().equals("ACK")) {
                         FriendModel friendModel = new FriendModel(requestModel.getReceiverName());
-                        modelRepository.addFriendList(friendModel);
+
+                        modelRepository.getFriendModelHashMap().put(friendModel.getFriendName(), friendModel);
+                        modelRepository.getFriendModelList().add(friendModel);
+                        //modelRepository.addFriendList(friendModel);
                     }
                 })
         );
@@ -75,6 +86,11 @@ public class FriendListFragmentViewModel extends AndroidViewModel {
 
     public void uncheckedFriendRequestButtonClicked() {
         buttonEvent.setValue(REQ);
+    }
+
+    public void listItemClicked(int position) {
+        modelRepository.setSelectedFriendModel(modelRepository.getFriendModelAt(position));
+        profileEvent.setValue(true);
     }
 
     public void onRefresh() {

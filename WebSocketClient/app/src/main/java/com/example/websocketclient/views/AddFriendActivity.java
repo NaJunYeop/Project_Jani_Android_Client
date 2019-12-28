@@ -6,61 +6,39 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.websocketclient.R;
-import com.example.websocketclient.database.entity.UserInformation;
 import com.example.websocketclient.databinding.ActivityAddFriendBinding;
 import com.example.websocketclient.models.RequestModel;
 import com.example.websocketclient.viewmodels.AddFriendViewModel;
+import com.example.websocketclient.views.utils.dialogs.AddFriendDialog;
+import com.example.websocketclient.views.utils.dialogs.OneButtonDialog;
 import com.google.gson.Gson;
 
-import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 
 public class AddFriendActivity extends AppCompatActivity {
 
     private final String TAG = "AddFriendLog";
+    private final int OK = 0;
+    private final int NO = 1;
+
     private ActivityAddFriendBinding activityAddFriendBinding;
     private AddFriendViewModel addFriendViewModel;
     private RequestModel requestModel;
     private Gson gson = new Gson();
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+    private AddFriendDialog addFriendDialog;
+    private OneButtonDialog oneButtonDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         dataBindingInit();
-
-        addFriendViewModel.getRetrofitEvent()
-                .observe(this, new Observer<String>() {
-                    @Override
-                    public void onChanged(String s) {
-                        if (s.equals("NOTEXIST")) {
-                            Toast.makeText(AddFriendActivity.this, "존재하지 않는 계정입니다.", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
-                            Toast.makeText(AddFriendActivity.this, "추가 하시겠습니까?", Toast.LENGTH_SHORT).show();
-                            if (requestModel == null) requestModel = new RequestModel();
-
-                            requestModel.setSenderName(addFriendViewModel.getModelRepository().getCurUserInformation().getUserName());
-                            requestModel.setReceiverName(s);
-                            requestModel.setStatus("REQ");
-                            Log.d(TAG, s);
-                            compositeDisposable.add(addFriendViewModel
-                                    .getModelRepository()
-                                    .stompSendMessage("/app/req/" + s, gson.toJson(requestModel))
-                                    .subscribe(() -> {
-                                        Log.d(TAG, "STOMP echo send successfully");
-                                    }, throwable -> {
-                                        Log.e(TAG, "Error send STOMP echo", throwable);
-                                    }));
-                        }
-                    }
-                });
+        getLiveDataEvent();
     }
 
     public void dataBindingInit() {
@@ -71,11 +49,42 @@ public class AddFriendActivity extends AppCompatActivity {
         activityAddFriendBinding.setAddFriendViewModel(addFriendViewModel);
     }
 
-    public void showAddDialog() {
+    public void getLiveDataEvent() {
+        addFriendViewModel.getRetrofitEvent()
+                .observe(this, new Observer<String>() {
+                    @Override
+                    public void onChanged(String s) {
+                        if (s.equals("NOTEXIST") || s.equals("ALREADY")) {
+                            showOneButtonDialog();
+                        } else if (s.equals("EXIST") || s.equals("REQUEST_EXIST")) {
+                            showAddDialog();
+                        }
+                    }
+                });
+
+        addFriendViewModel.getCommandEvent()
+                .observe(this, new Observer<Integer>() {
+                    @Override
+                    public void onChanged(Integer command) {
+                        if (command == 1) {
+                            addFriendDialog.dismiss();
+                        } else if (command == 2) {
+                            oneButtonDialog.dismiss();
+                        } else if (command == 3) {
+                            Toast.makeText(AddFriendActivity.this, "요청을 완료했습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
     }
 
-    public void showNotExistDialog() {
+    public void showAddDialog() {
+        if (addFriendDialog == null) addFriendDialog = new AddFriendDialog(addFriendViewModel);
+        addFriendDialog.show(getSupportFragmentManager(), "AddFriendDialog");
+    }
 
+    public void showOneButtonDialog() {
+        if (oneButtonDialog == null) oneButtonDialog = new OneButtonDialog(addFriendViewModel);
+        oneButtonDialog.show(getSupportFragmentManager(), "OneButtonDialog");
     }
 }

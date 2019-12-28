@@ -13,6 +13,7 @@ import com.example.websocketclient.retrofit.utils.RetrofitCommunicationService;
 import com.example.websocketclient.viewmodels.MainViewModel;
 import com.example.websocketclient.views.RequestFriendActivity;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,13 +45,15 @@ public class ModelRepository {
 
     private Map<String, ChatRoomModel> oldChatRoomModelMap = new HashMap<>();
     private Map<String, ChatRoomModel> newChatRoomModelMap = new HashMap<>();
+    private HashMap<String, FriendModel> friendModelHashMap = new HashMap<>();
+    private HashMap<String, RequestModel> requestModelHashMap = new HashMap<>();
 
     private ArrayList<ChatRoomModel> oldChatRoomModels = new ArrayList<>();
     private ArrayList<ChatRoomModel> newChatRoomModels = new ArrayList<>();
-    private ArrayList<FriendModel> oldFriends = new ArrayList<>();
-    private ArrayList<FriendModel> newFriends = new ArrayList<>();
-    private ArrayList<RequestModel> requestModels = new ArrayList<>();
+    private ArrayList<FriendModel> friendModels;
+    private ArrayList<RequestModel> requestModels;
 
+    private FriendModel selectedFriendModel;
     private ChatRoomModel selectedChatRoomModel;
 
 
@@ -65,6 +68,9 @@ public class ModelRepository {
 
     public ModelRepository() {
         mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://" + ServerModel.SERVER_IP + ":" + ServerModel.SERVER_PORT + "/janiwss/websocket");
+
+        requestModels = new ArrayList<>(requestModelHashMap.values());
+        friendModels = new ArrayList<>(friendModelHashMap.values());
 
         // Some Data Initialization Here... Or Call Initializer Method
         /*oldFriends.add(new FriendModel("나준엽"));
@@ -83,6 +89,26 @@ public class ModelRepository {
         retrofitCommunicationService = RetrofitClient.getInstance();
     }
 
+    public void setSelectedFriendModel(FriendModel selectedFriendModel) {
+        this.selectedFriendModel = selectedFriendModel;
+    }
+
+    public FriendModel getSelectedFriendModel() {
+        return this.selectedFriendModel;
+    }
+
+    public void setSelectedChatRoomModel(ChatRoomModel selectedChatRoomModel) {
+        this.selectedChatRoomModel = selectedChatRoomModel;
+    }
+
+    public ChatRoomModel getSelectedChatRoomModel() {
+        return selectedChatRoomModel;
+    }
+
+    public HashMap<String, RequestModel> getRequestModelHashMap() {
+        return this.requestModelHashMap;
+    }
+
     public ArrayList<RequestModel> getRequestModelList() {
         return this.requestModels;
     }
@@ -95,22 +121,25 @@ public class ModelRepository {
         requestModels.remove(position);
     }
 
-    public void addRequestModel(RequestModel requestModel) {
+    /*public void addRequestModel(RequestModel requestModel) {
         requestModels.add(requestModel);
+    }*/
+
+    public HashMap<String, FriendModel> getFriendModelHashMap() {
+        return friendModelHashMap;
     }
 
-    public ArrayList<FriendModel> getFriendList() {
-        return this.oldFriends;
+    public ArrayList<FriendModel> getFriendModelList() {
+        return this.friendModels;
     }
 
     public FriendModel getFriendModelAt(int position) {
-        return oldFriends.get(position);
+        return friendModels.get(position);
     }
 
-    public void addFriendList(FriendModel friendModel) {
-        oldFriends.add(friendModel);
-        newFriends.add(friendModel);
-    }
+    /*public void addFriendList(FriendModel friendModel) {
+        friendModels.add(friendModel);
+    }*/
 
     public ArrayList<ChatRoomModel> getChatRoomList() {
         return this.oldChatRoomModels;
@@ -123,14 +152,6 @@ public class ModelRepository {
     public void addChatRoomList(ChatRoomModel chatRoomModel) {
         oldChatRoomModels.add(chatRoomModel);
         newChatRoomModels.add(chatRoomModel);
-    }
-
-    public void setSelectedChatRoomModel(ChatRoomModel selectedChatRoomModel) {
-        this.selectedChatRoomModel = selectedChatRoomModel;
-    }
-
-    public ChatRoomModel getSelectedChatRoomModel() {
-        return selectedChatRoomModel;
     }
 
     public UserInformation getCurUserInformation() {

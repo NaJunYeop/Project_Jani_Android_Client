@@ -16,11 +16,18 @@
         android:layout_height="match_parent"
         tools:context=".views.RequestFriendActivity">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/request_friend_recyclerview"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/request_friend_refresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </androidx.recyclerview.widget.RecyclerView>
+            android:layout_height="match_parent"
+            app:refreshing="@{requestFriendViewModel.isLoading}"
+            app:onRefreshListener="@{() -> requestFriendViewModel.onRefresh()}">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/request_friend_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </androidx.recyclerview.widget.RecyclerView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 </layout>

@@ -20,6 +20,7 @@ import com.example.websocketclient.databinding.FragmentFriendListBinding;
 import com.example.websocketclient.viewmodels.FriendListFragmentViewModel;
 import com.example.websocketclient.views.AddFriendActivity;
 import com.example.websocketclient.views.RequestFriendActivity;
+import com.example.websocketclient.views.UserProfileActivity;
 import com.example.websocketclient.views.utils.adapters.FriendListAdapter;
 
 public class FriendListFragment extends Fragment {
@@ -78,6 +79,17 @@ public class FriendListFragment extends Fragment {
                         }
                         else if (command == REQ) {
                             Intent intent = new Intent(getActivity(), RequestFriendActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                });
+
+        friendListFragmentViewModel.getProfileEvent()
+                .observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean check) {
+                        if (check) {
+                            Intent intent = new Intent(getActivity(), UserProfileActivity.class);
                             startActivity(intent);
                         }
                     }

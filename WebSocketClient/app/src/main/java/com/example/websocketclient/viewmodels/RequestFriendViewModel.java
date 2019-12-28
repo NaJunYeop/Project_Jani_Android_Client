@@ -5,6 +5,8 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableField;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -19,13 +21,24 @@ import io.reactivex.disposables.CompositeDisposable;
 public class RequestFriendViewModel extends AndroidViewModel {
 
     private final String TAG = "RFVMLOG";
+    private int flag = 0;
+    private final int ACCEPT = 1;
+    private final int DENY = 2;
+    private int list_position;
+
     private Context context;
     private ModelRepository modelRepository;
-    private MutableLiveData<RequestModel> requestModelEvent;
+
+    public ObservableBoolean isLoading = new ObservableBoolean();
+
+    private MutableLiveData<Boolean> buttonClickEvent;
+    private MutableLiveData<Boolean> decisionEvent;
+    private MutableLiveData<Boolean> refreshEvent;
+
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private Gson gson = new Gson();
 
-    private MutableLiveData<Boolean> decisionEvent;
+    public ObservableField<String> dialogTextView = new ObservableField<>();
 
     public RequestFriendViewModel(@NonNull Application application) {
         super(application);
@@ -38,35 +51,75 @@ public class RequestFriendViewModel extends AndroidViewModel {
         return decisionEvent = new MutableLiveData<>();
     }
 
+    public LiveData<Boolean> getButtonClickEvent() {
+        return buttonClickEvent = new MutableLiveData<>();
+    }
+
+    public LiveData<Boolean> getRefreshEvent() {
+        return refreshEvent = new MutableLiveData<>();
+    }
+
     public ModelRepository getModelRepository() {
         return modelRepository;
     }
 
     public void acceptButtonClicked(int position) {
-        RequestModel requestModel = modelRepository.getRequestModelAt(position);
-        FriendModel friendModel = new FriendModel(requestModel.getSenderName());
-
-        requestModel.setStatus("ACK");
-        modelRepository.addFriendList(friendModel);
-
-        compositeDisposable.add(modelRepository
-                .stompSendMessage("/req/" + requestModel.getSenderName(), gson.toJson(requestModel))
-                .subscribe(() -> {
-                    Log.d(TAG, "STOMP echo send successfully");
-                    denyButtonClicked(position);
-                }, throwable -> {
-                    Log.e(TAG, "Error send STOMP echo", throwable);
-                }));
+        flag = ACCEPT;
+        dialogTextView.set("[ " + modelRepository.getRequestModelAt(position).getSenderName() + " ] 님을 친구로 추가 하시겠습니까?");
+        list_position = position;
+        buttonClickEvent.setValue(true);
     }
 
     public void denyButtonClicked(int position) {
-        modelRepository.eraseRequestModelAt(position);
+        flag = DENY;
+        dialogTextView.set("요청 목록에서 삭제 하시겠습니까?");
+        list_position = position;
+        buttonClickEvent.setValue(true);
+    }
+
+    public void duplicateAcceptButtonClicked() {
+        if (flag == ACCEPT) {
+            RequestModel requestModel = modelRepository.getRequestModelAt(list_position);
+            FriendModel friendModel = new FriendModel(requestModel.getSenderName());
+
+            requestModel.setStatus("ACK");
+
+            modelRepository.getFriendModelHashMap().put(friendModel.getFriendName(), friendModel);
+            modelRepository.getFriendModelList().add(friendModel);
+            //modelRepository.addFriendList(friendModel);
+
+            compositeDisposable.add(modelRepository
+                    .stompSendMessage("/app/req/" + requestModel.getSenderName(), gson.toJson(requestModel))
+                    .subscribe(() -> {
+                        Log.d(TAG, "STOMP echo send successfully");
+                    }, throwable -> {
+                        Log.e(TAG, "Error send STOMP echo", throwable);
+                    }));
+        }
+
+        modelRepository.getRequestModelHashMap().remove(modelRepository.getRequestModelList().get(list_position).getSenderName());
+        modelRepository.getRequestModelList().remove(list_position);
+
         decisionEvent.setValue(true);
+        flag = 0;
+    }
+
+    public void duplicateDenyButtonClicked() {
+        decisionEvent.setValue(false);
+    }
+
+    public void onRefresh() {
+        isLoading.set(true);
+        refreshEvent.setValue(true);
+    }
+
+    public void onComplete() {
+        isLoading.set(false);
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        //compositeDisposable.dispose();
+        compositeDisposable.dispose();
     }
 }

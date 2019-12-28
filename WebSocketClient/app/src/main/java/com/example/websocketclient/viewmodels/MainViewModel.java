@@ -100,7 +100,6 @@ public class MainViewModel extends AndroidViewModel implements Serializable {
     }
 
     public void stompConnect() {
-        Log.i(TAG, "2 : Second");
         compositeDisposable.add(modelRepository.stompGetStompClientLifecycle()
                 .subscribe(lifecycleEvent -> {
                     switch (lifecycleEvent.getType()) {
@@ -127,23 +126,22 @@ public class MainViewModel extends AndroidViewModel implements Serializable {
     }
 
     public void createRequestChannel() {
-        Log.i(TAG, "3 : Third");
         Toast.makeText(context, modelRepository.getCurUserInformation().getUserName(), Toast.LENGTH_LONG).show();
         compositeDisposable.add(modelRepository.stompGetTopicMessage("/req/" + modelRepository.getCurUserInformation().getUserName())
                 .subscribe(topicMessage -> {
                     // Json Parsing Needed.
                     RequestModel requestModel = gson.fromJson(topicMessage.getPayload(), RequestModel.class);
                     if (requestModel.getStatus().equals("REQ")) {
-                        modelRepository.addRequestModel(gson.fromJson(topicMessage.getPayload(), RequestModel.class));
+                        if (modelRepository.getRequestModelHashMap().containsKey(requestModel.getSenderName()) == false) {
+                            modelRepository.getRequestModelHashMap().put(requestModel.getSenderName(), requestModel);
+                            modelRepository.getRequestModelList().add(requestModel);
+                        }
                     }
                     else if (requestModel.getStatus().equals("ACK")) {
                         FriendModel friendModel = new FriendModel(requestModel.getReceiverName());
-                        modelRepository.addFriendList(friendModel);
+                        modelRepository.getFriendModelHashMap().put(friendModel.getFriendName(), friendModel);
+                        modelRepository.getFriendModelList().add(friendModel);
                     }
-                    /*rMessageModel = gson.fromJson(topicMessage.getPayload(), MessageModel.class);
-                    messageModels.add(rMessageModel);
-                    Log.d(TAG, "Received : " + rMessageModel.getContents());
-                    positionEvent.setValue(messageModels.size() - 1)*/;
                 })
         );
     }
