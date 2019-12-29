@@ -17,13 +17,13 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static AppDatabase getInstance(Context context) {
         if (instance == null) {
-            instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "jani_database").build();
+            instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "jani_database_test").build();
         }
         return instance;
     }
     public static AppDatabase newInstance(Context context) {
         instance = null;
-        instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "jani_database").build();
+        instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "jani_database_test").build();
         return instance;
     }
 

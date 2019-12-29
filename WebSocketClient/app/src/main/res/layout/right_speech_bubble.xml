@@ -6,6 +6,9 @@
             name="position"
             type="Integer" />
         <variable
+            name="chatRoomViewModel"
+            type="com.example.websocketclient.viewmodels.ChatRoomViewModel" />
+        <variable
             name="mainViewModel"
             type="com.example.websocketclient.viewmodels.MainViewModel" />
     </data>
@@ -37,14 +40,14 @@
                     android:maxLines="15"
                     android:padding="10sp"
                     android:textSize="15sp"
-                    android:text="@{mainViewModel.getMessageModelAt(position).contents}"/>
+                    android:text="@{chatRoomViewModel.modelRepository.selectedChatRoomModel.messageModels.get(position).contents}"/>
 
                 <TextView
                     android:id="@+id/chatmessage2_tv_date"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
-                    android:text="@{mainViewModel.getMessageModelAt(position).senderSideDate}"/>
+                    android:text="@{chatRoomViewModel.modelRepository.selectedChatRoomModel.messageModels.get(position).senderSideDate}"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

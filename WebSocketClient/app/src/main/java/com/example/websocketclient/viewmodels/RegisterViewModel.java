@@ -15,15 +15,12 @@ import com.example.websocketclient.database.AppDatabase;
 import com.example.websocketclient.database.entity.UserInformation;
 import com.example.websocketclient.models.ModelRepository;
 import com.example.websocketclient.retrofit.models.RegisterModel;
-import com.example.websocketclient.retrofit.utils.RetrofitClient;
 import com.example.websocketclient.retrofit.utils.RetrofitCommunicationService;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.MaybeObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class RegisterViewModel extends AndroidViewModel {
 
@@ -95,6 +92,7 @@ public class RegisterViewModel extends AndroidViewModel {
     public void storeUserInformation() {
         if (mUserInformation == null) mUserInformation = new UserInformation();
         mUserInformation.setUserName(userNameEdit.get());
+        mUserInformation.setTopicIdentifier(0);
 
         modelRepository.dbInsertUserInformation(mUserInformation)
                 .subscribe(new CompletableObserver() {

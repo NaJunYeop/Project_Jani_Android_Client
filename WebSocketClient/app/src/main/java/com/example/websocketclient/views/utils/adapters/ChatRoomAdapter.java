@@ -12,6 +12,7 @@ import com.example.websocketclient.R;
 import com.example.websocketclient.databinding.LeftSpeechBubbleBinding;
 import com.example.websocketclient.databinding.RightSpeechBubbleBinding;
 import com.example.websocketclient.models.MessageModel;
+import com.example.websocketclient.viewmodels.ChatRoomViewModel;
 import com.example.websocketclient.viewmodels.MainViewModel;
 import com.example.websocketclient.views.MainActivity;
 import com.example.websocketclient.views.utils.viewholders.LeftSpeechBubbleViewHolder;
@@ -23,11 +24,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final String TAG = "ChatRoomAdapterLog";
     private final int SENDER = 0;
     private final int RECEIVER = 1;
-    private MainViewModel mainViewModel;
+    private ChatRoomViewModel chatRoomViewModel;
     private LayoutInflater inflater;
 
-    public ChatRoomAdapter(MainViewModel mainViewModel) {
-        this.mainViewModel = mainViewModel;
+    public ChatRoomAdapter(ChatRoomViewModel chatRoomViewModel) {
+        this.chatRoomViewModel = chatRoomViewModel;
     }
 
     // onCreateViewHolder를 실행하기 전에 Scarpeed View Pool에 현재 ViewType과 같은 ViewHolder가 있으면 새로운 ViewHolder 객체를 생성하지 않고
@@ -59,11 +60,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     // onCreateViewHolder에서 생성된 ViewHolder를 가져와서 현재 Position에 맞는 Data를 ViewHolder안의 View들에게 Binding해준다.
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (userDivider(mainViewModel.getMessageModelAt(position).getSenderName()) == SENDER) {
-            ((RightSpeechBubbleViewHolder)holder).setBinding(mainViewModel, position);
+        if (userDivider(chatRoomViewModel.getModelRepository().getSelectedChatRoomModel().getMessageModels().get(position).getSenderName()) == SENDER) {
+            ((RightSpeechBubbleViewHolder)holder).setBinding(chatRoomViewModel, position);
         }
         else {
-            ((LeftSpeechBubbleViewHolder)holder).setBinding(mainViewModel, position);
+            ((LeftSpeechBubbleViewHolder)holder).setBinding(chatRoomViewModel, position);
         }
 
     }
@@ -71,17 +72,17 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     // 현재 Position에 해당하는 ViewType을 판단한다.
     @Override
     public int getItemViewType(int position) {
-        return userDivider(mainViewModel.getMessageModelAt(position).getSenderName());
+        return userDivider(chatRoomViewModel.getModelRepository().getSelectedChatRoomModel().getMessageModels().get(position).getSenderName());
     }
 
     // ItemCount 수만큼 getItemViewType(), onCreateViewHolder(), onBindViewHolder가 연속적으로 호출된다.
     @Override
     public int getItemCount() {
-        return mainViewModel.getChatAdapterArrayList().size();
+        return chatRoomViewModel.getModelRepository().getSelectedChatRoomModel().getMessageModels().size();
     }
 
     public int userDivider(String userName) {
-        if (MainActivity.intentUserInformation.getUserName().equals(userName)) {
+        if (chatRoomViewModel.getModelRepository().getCurUserInformation().getUserName().equals(userName)) {
             return SENDER;
         }
         else {

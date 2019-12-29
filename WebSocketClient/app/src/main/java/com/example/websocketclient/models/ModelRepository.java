@@ -1,9 +1,6 @@
 package com.example.websocketclient.models;
 
 import android.content.Context;
-import android.util.Log;
-
-import androidx.lifecycle.AndroidViewModel;
 
 import com.example.websocketclient.database.AppDatabase;
 import com.example.websocketclient.database.entity.UserInformation;
@@ -11,20 +8,16 @@ import com.example.websocketclient.retrofit.models.RegisterModel;
 import com.example.websocketclient.retrofit.utils.RetrofitClient;
 import com.example.websocketclient.retrofit.utils.RetrofitCommunicationService;
 import com.example.websocketclient.viewmodels.MainViewModel;
-import com.example.websocketclient.views.RequestFriendActivity;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableTransformer;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
@@ -43,18 +36,19 @@ public class ModelRepository {
     private UserInformation userInformation = new UserInformation();
     private StompClient mStompClient;
 
-    private Map<String, ChatRoomModel> oldChatRoomModelMap = new HashMap<>();
-    private Map<String, ChatRoomModel> newChatRoomModelMap = new HashMap<>();
+    private HashMap<String, ChatRoomModel> chatRoomModelHashMap = new HashMap<>();
     private HashMap<String, FriendModel> friendModelHashMap = new HashMap<>();
     private HashMap<String, RequestModel> requestModelHashMap = new HashMap<>();
 
-    private ArrayList<ChatRoomModel> oldChatRoomModels = new ArrayList<>();
-    private ArrayList<ChatRoomModel> newChatRoomModels = new ArrayList<>();
+    private ArrayList<ChatRoomModel> chatRoomModels;
     private ArrayList<FriendModel> friendModels;
     private ArrayList<RequestModel> requestModels;
+    private ArrayList<MessageModel> messageModels;
 
     private FriendModel selectedFriendModel;
     private ChatRoomModel selectedChatRoomModel;
+
+    private MainViewModel mainViewModel;
 
 
     // Singleton Pattern
@@ -71,22 +65,21 @@ public class ModelRepository {
 
         requestModels = new ArrayList<>(requestModelHashMap.values());
         friendModels = new ArrayList<>(friendModelHashMap.values());
-
-        // Some Data Initialization Here... Or Call Initializer Method
-        /*oldFriends.add(new FriendModel("나준엽"));
-        oldFriends.add(new FriendModel("김용재"));
-
-        RequestModel requestModel = new RequestModel();
-        requestModel.setSenderName("sender");
-        requestModel.setReceiverName("receiver");
-        requestModel.setStatus("REQ");
-        requestModels.add(requestModel);*/
+        chatRoomModels = new ArrayList<>(chatRoomModelHashMap.values());
     }
 
     public void setReferences(Context context) {
         this.context = context;
         db = AppDatabase.getInstance(this.context);
         retrofitCommunicationService = RetrofitClient.getInstance();
+    }
+
+    public void setMainViewModel(MainViewModel mainViewModel) {
+        this.mainViewModel = mainViewModel;
+    }
+
+    public MainViewModel getMainViewModel() {
+        return this.mainViewModel;
     }
 
     public void setSelectedFriendModel(FriendModel selectedFriendModel) {
@@ -105,6 +98,7 @@ public class ModelRepository {
         return selectedChatRoomModel;
     }
 
+    // ================================== RequestModel =============================================
     public HashMap<String, RequestModel> getRequestModelHashMap() {
         return this.requestModelHashMap;
     }
@@ -117,14 +111,7 @@ public class ModelRepository {
         return requestModels.get(position);
     }
 
-    public void eraseRequestModelAt(int position) {
-        requestModels.remove(position);
-    }
-
-    /*public void addRequestModel(RequestModel requestModel) {
-        requestModels.add(requestModel);
-    }*/
-
+    // ================================== FriendModel ==============================================
     public HashMap<String, FriendModel> getFriendModelHashMap() {
         return friendModelHashMap;
     }
@@ -137,21 +124,28 @@ public class ModelRepository {
         return friendModels.get(position);
     }
 
-    /*public void addFriendList(FriendModel friendModel) {
-        friendModels.add(friendModel);
-    }*/
+
+    // ================================== ChatRoomModel ============================================
+    public HashMap<String, ChatRoomModel> getChatRoomModelHashMap() {
+        return this.chatRoomModelHashMap;
+    }
 
     public ArrayList<ChatRoomModel> getChatRoomList() {
-        return this.oldChatRoomModels;
+        return this.chatRoomModels;
     }
 
-    public ChatRoomModel getChatRoomModel(int position) {
-        return oldChatRoomModels.get(position);
+    public ChatRoomModel getChatRoomModelAt(int position) {
+        return chatRoomModels.get(position);
     }
 
-    public void addChatRoomList(ChatRoomModel chatRoomModel) {
-        oldChatRoomModels.add(chatRoomModel);
-        newChatRoomModels.add(chatRoomModel);
+    // ================================== MessageModel ==============================================
+
+    public ArrayList<MessageModel> getMessageModels() {
+        return this.messageModels;
+    }
+
+    public MessageModel getMessageModelAt(int position) {
+        return this.messageModels.get(position);
     }
 
     public UserInformation getCurUserInformation() {

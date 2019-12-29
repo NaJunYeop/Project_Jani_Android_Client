@@ -70,8 +70,11 @@ public class MainViewModel extends AndroidViewModel implements Serializable {
         // View.getContext() : 현재 실행되고 있는 View의 Context를 Return, this와 같다.
         modelRepository = ModelRepository.getInstance();
         modelRepository.setReferences(context);
+        modelRepository.setMainViewModel(this);
 
         createRequestChannel();
+        createQueueChannel();
+        //createTopicChannel();
         stompConnect();
     }
 
@@ -148,7 +151,31 @@ public class MainViewModel extends AndroidViewModel implements Serializable {
 
     public void createQueueChannel() {
         createChatRoom("/queue/" + modelRepository.getCurUserInformation().getUserName());
+        compositeDisposable.add(modelRepository.stompGetTopicMessage("/queue/" + modelRepository.getCurUserInformation().getUserName())
+                .subscribe(topicMessage -> {
+                    // Json Parsing Needed.
+                    MessageModel receivedMessageModel = gson.fromJson(topicMessage.getPayload(), MessageModel.class);
+                    String chatRoomName = receivedMessageModel.getChatRoomName();
+                    // Sender와의 대화가 없는 경우 ChatRoom을 생성
+                    // Sneder와의 대화가 있는 경우 MessageModel에 Add
+                    if (modelRepository.getChatRoomModelHashMap().containsKey(chatRoomName) == true) {
+                        modelRepository.getChatRoomModelHashMap().get(chatRoomName).getMessageModels().add(receivedMessageModel);
+                        // 하... 더 좋은방법 없나...
+                        for (ChatRoomModel crm : modelRepository.getChatRoomList()) {
+                            if (crm.equals(chatRoomName)) {
+                                crm.getMessageModels().add(receivedMessageModel);
+                            }
+                        }
+                    } else {
+                        ChatRoomModel newChatRoomModel = new ChatRoomModel();
+                        ArrayList<MessageModel> newMessageModels = new ArrayList<>();
 
+                        newMessageModels.add(receivedMessageModel);
+
+                        modelRepository.getChatRoomModelHashMap().put(chatRoomName, newChatRoomModel);
+                    }
+                })
+        );
     }
 
     public void createTopicChannel() {
@@ -169,28 +196,6 @@ public class MainViewModel extends AndroidViewModel implements Serializable {
                 })
         );
     }
-
-    public MessageModel getMessageModelAt(int position) {
-        return messageModels.get(position);
-    }
-
-    public void sendButtonClikced() {
-        if (sMessageModel == null) sMessageModel = new MessageModel();
-
-        sMessageModel.setSenderName(MainActivity.intentUserInformation.getUserName());
-        sMessageModel.setChatRoomName("topic/greetings");
-        sMessageModel.setContents(messageEdit.get());
-        sMessageModel.setSenderSideDate("2019/12/16");
-        messageEdit.set("");
-
-        compositeDisposable.add(modelRepository.stompSendMessage("/app/end", gson.toJson(sMessageModel))
-                .subscribe(() -> {
-                    Log.d(TAG, "STOMP echo send successfully");
-                }, throwable -> {
-                    Log.e(TAG, "Error send STOMP echo", throwable);
-                }));
-    }
-
     private void resetSubscriptions() {
         if (compositeDisposable != null) {
             compositeDisposable.dispose();

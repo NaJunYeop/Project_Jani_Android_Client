@@ -19,6 +19,7 @@ import com.example.websocketclient.viewmodels.RegisterViewModel;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -41,8 +42,9 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Test 하면서 SQLite User Information 삭제 할 일 있으면 밑의 주석을 없애고 실행하시오.
-        /*db = AppDatabase.getInstance(this);
-        completable = db.userDao().deleteAll();
+        //db = AppDatabase.getInstance(this);
+
+        /*completable = db.userDao().deleteAll();
         completable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -92,7 +94,6 @@ public class RegisterActivity extends AppCompatActivity {
                             Log.i(TAG, userInformation.getUserName() + "is logged on");
                             Toast.makeText(RegisterActivity.this, userInformation.getUserName(), Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                            intent.putExtra("userInfo", userInformation);
                             startActivity(intent);
                         }
                     }

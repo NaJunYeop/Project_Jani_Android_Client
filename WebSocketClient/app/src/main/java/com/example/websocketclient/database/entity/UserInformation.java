@@ -14,6 +14,9 @@ public class UserInformation implements Serializable {
     @ColumnInfo(name = "user_name")
     private String userName;
 
+    @ColumnInfo(name = "topic_identifier")
+    private int topicIdentifier;
+
     public void setUid(int uid) {
         this.uid = uid;
     }
@@ -28,5 +31,13 @@ public class UserInformation implements Serializable {
 
     public String getUserName() {
         return userName;
+    }
+
+    public int getTopicIdentifier() {
+        return topicIdentifier;
+    }
+
+    public void setTopicIdentifier(int topicIdentifier) {
+        this.topicIdentifier = topicIdentifier;
     }
 }
