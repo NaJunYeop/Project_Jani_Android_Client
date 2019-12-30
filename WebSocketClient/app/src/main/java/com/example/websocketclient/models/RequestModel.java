@@ -1,8 +1,11 @@
 package com.example.websocketclient.models;
 
+import java.util.ArrayList;
+
 public class RequestModel {
     private String senderName;
     private String receiverName;
+    private ArrayList<FriendModel> participants;
     private String status;
 
     public String getSenderName() {
@@ -27,5 +30,13 @@ public class RequestModel {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public ArrayList<FriendModel> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(ArrayList<FriendModel> participants) {
+        this.participants = participants;
     }
 }

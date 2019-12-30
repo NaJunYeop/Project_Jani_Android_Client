@@ -1,6 +1,7 @@
 package com.example.websocketclient.views.utils.adapters;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -22,6 +23,7 @@ public class PageAdapter extends FragmentPagerAdapter {
     private final int CHAT_ROOM = 1;
     private final int SCHEDULER = 2;
     private final int CONFIGURATION = 3;
+    private final CharSequence[] viewPagerTitle = {"친구", "채팅", "일정", "설정"};
 
     private FragmentFriendListBinding fragmentFriendListBinding;
     private FragmentChatRoomListBinding fragmentChatRoomListBinding;
@@ -44,11 +46,17 @@ public class PageAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case FRIEND : return new FriendListFragment();
-            case CHAT_ROOM : return new ChatRoomListFragment(mainViewModel);
+            case CHAT_ROOM : return new ChatRoomListFragment();
             case SCHEDULER : return new SchedulerFragment(mainViewModel);
             case CONFIGURATION : return new ConfigurationFragment(mainViewModel);
             default : return null;
         }
+    }
+
+    @Nullable
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return viewPagerTitle[position];
     }
 
     @Override

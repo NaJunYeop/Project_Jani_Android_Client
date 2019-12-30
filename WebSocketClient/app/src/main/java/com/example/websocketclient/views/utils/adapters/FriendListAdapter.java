@@ -23,9 +23,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private FriendListFragmentViewModel friendListFragmentViewModel;
 
     public FriendListAdapter(FriendListFragmentViewModel friendListFragmentViewModel) {
-        //this.mainViewModel = mainViewModel;
         this.friendListFragmentViewModel = friendListFragmentViewModel;
-        //Log.i(TAG, "" + mainViewModel.getModelRepository().getFriendList().size());
     }
 
 
@@ -35,7 +33,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (inflater == null) inflater = LayoutInflater.from(parent.getContext());
         fragmentFriendListUnitBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_friend_list_unit, parent,false);
 
-        //Log.i(TAG, "" + mainViewModel.getModelRepository().getFriendList().size());
 
         return new FriendListViewHolder(fragmentFriendListUnitBinding);
     }
@@ -47,7 +44,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        //Log.i(TAG, "" + friendListFragmentViewModel.getModelRepository().getFriendList().size());
         return friendListFragmentViewModel.getModelRepository().getFriendModelList().size();
     }
 
@@ -61,7 +57,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         public void setBinding(FriendListFragmentViewModel friendListFragmentViewModel, int position) {
-            //fragmentFriendListUnitBinding.setMainViewModel(mainViewModel);
             fragmentFriendListUnitBinding.setFriendListViewModel(friendListFragmentViewModel);
             fragmentFriendListUnitBinding.setPosition(position);
             fragmentFriendListUnitBinding.executePendingBindings();

@@ -2,6 +2,7 @@ package com.example.websocketclient.viewmodels;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
@@ -9,9 +10,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.websocketclient.models.ChatRoomModel;
 import com.example.websocketclient.models.FriendModel;
-import com.example.websocketclient.models.MessageModel;
 import com.example.websocketclient.models.ModelRepository;
 
 import java.util.ArrayList;
@@ -39,38 +38,20 @@ public class UserProfileViewModel extends AndroidViewModel {
 
         targetUser = modelRepository.getSelectedFriendModel();
 
-        queueRoomName += targetUser;
+        queueRoomName += targetUser.getFriendName();
         userProfileName.set(targetUser.getFriendName());
-    }
+}
 
     public LiveData<Integer> getProfileButtonEvent() {
         return profileButtonEvent = new MutableLiveData<>();
     }
 
     public void startEndToEndChattingButtonClicked() {
-        if (modelRepository.getChatRoomModelHashMap().containsKey(targetUser.getFriendName()) == true) {
-            modelRepository.setSelectedChatRoomModel(modelRepository.getChatRoomModelHashMap().get(targetUser.getFriendName()));
-        } else {
-            ChatRoomModel newChatRoomModel = new ChatRoomModel();
-            ArrayList<MessageModel> newMessageModels = new ArrayList<>();
-            ArrayList<FriendModel> newParticipants = new ArrayList<>();
+        modelRepository.addChatRoomModelByName(targetUser.getFriendName());
 
-            String initialChatRoomName = "/queue/" + targetUser.getFriendName();
+        Log.d("TesTest", "First 1:1 ButtonClicked" + modelRepository.getChatRoomList().size());
 
-            newParticipants.add(new FriendModel(targetUser.getFriendName()));
-
-            newChatRoomModel.setChatRoomName(initialChatRoomName);
-            newChatRoomModel.setChatRoomNickName(initialChatRoomName);
-            newChatRoomModel.setMessageModels(newMessageModels);
-            newChatRoomModel.setParticipants(newParticipants);
-            newChatRoomModel.setSenderName("/queue/" + modelRepository.getCurUserInformation().getUserName());
-            newChatRoomModel.setType(QUEUE);
-
-            // 이렇게 하고 ChatRoomViewModel에서 onCleared될 때, 해당 채팅방이 존재하지 않으면 Add.
-
-            modelRepository.setSelectedChatRoomModel(newChatRoomModel);
-        }
-
+        modelRepository.setSelectedChatRoomModel(modelRepository.getChatRoomModelHashMap().get(queueRoomName));
         profileButtonEvent.setValue(1);
     }
 }

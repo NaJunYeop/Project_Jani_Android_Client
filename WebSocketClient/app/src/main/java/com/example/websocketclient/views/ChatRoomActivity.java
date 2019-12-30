@@ -27,6 +27,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         dataBindingInit();
         getLiveDataEvent();
     }
@@ -42,16 +43,19 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         // Binds ChatRoomAdapter.class
         chatRoomAdapter = new ChatRoomAdapter(chatRoomViewModel);
+
         activityChatRoomBinding.setChatRoomAdapter(chatRoomAdapter);
         activityChatRoomBinding.recyclerView.setAdapter(chatRoomAdapter);
     }
 
     public void getLiveDataEvent() {
         chatRoomViewModel.getMessageEvent()
-                .observe(this, new Observer<Boolean>() {
+                .observe(this, new Observer<Integer>() {
                     @Override
-                    public void onChanged(Boolean check) {
-
+                    public void onChanged(Integer flag) {
+                        if (flag == 0) {
+                            activityChatRoomBinding.recyclerView.scrollToPosition(chatRoomAdapter.getItemCount() - 1);
+                        }
                     }
                 });
     }

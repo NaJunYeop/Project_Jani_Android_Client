@@ -3,10 +3,8 @@ package com.example.websocketclient.viewmodels;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -17,14 +15,11 @@ import com.example.websocketclient.models.FriendModel;
 import com.example.websocketclient.models.ModelRepository;
 import com.example.websocketclient.models.RequestModel;
 import com.example.websocketclient.retrofit.models.RegisterModel;
-import com.example.websocketclient.views.utils.dialogs.AddFriendDialog;
 import com.google.gson.Gson;
 
 import io.reactivex.MaybeObserver;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class AddFriendViewModel extends AndroidViewModel {
 

@@ -84,8 +84,7 @@ public class RequestFriendViewModel extends AndroidViewModel {
 
             requestModel.setStatus("ACK");
 
-            modelRepository.getFriendModelHashMap().put(friendModel.getFriendName(), friendModel);
-            modelRepository.getFriendModelList().add(friendModel);
+            modelRepository.addFriendModel(friendModel);
             //modelRepository.addFriendList(friendModel);
 
             compositeDisposable.add(modelRepository
@@ -97,8 +96,7 @@ public class RequestFriendViewModel extends AndroidViewModel {
                     }));
         }
 
-        modelRepository.getRequestModelHashMap().remove(modelRepository.getRequestModelList().get(list_position).getSenderName());
-        modelRepository.getRequestModelList().remove(list_position);
+        modelRepository.eraseRequestModelByPosition(list_position);
 
         decisionEvent.setValue(true);
         flag = 0;

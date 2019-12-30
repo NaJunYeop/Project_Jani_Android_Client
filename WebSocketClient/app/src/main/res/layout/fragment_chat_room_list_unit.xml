@@ -6,12 +6,52 @@
             name="position"
             type="Integer" />
         <variable
-            name="mainViewModel"
-            type="com.example.websocketclient.viewmodels.MainViewModel" />
+            name="chatRoomListViewModel"
+            type="com.example.websocketclient.viewmodels.ChatRoomListViewModel" />
     </data>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="15sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="@{() -> chatRoomListViewModel.chatListItemClicked(position)}">
 
+        <LinearLayout
+            android:layout_width="0sp"
+            android:layout_height="100sp"
+            android:layout_weight="7"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.5"
+                android:textStyle="bold"
+                android:text="@{chatRoomListViewModel.modelRepository.getChatRoomModelAt(position).chatRoomName}"
+                android:paddingLeft="15sp"
+                android:textSize="20sp"
+                android:gravity="center_vertical">
+            </TextView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textSize="18sp"
+                android:gravity="center_vertical"
+                android:paddingLeft="15sp"
+                android:text="@{chatRoomListViewModel.modelRepository.getChatRoomModelAt(position).messageModelLast.contents}">
+            </TextView>
+        </LinearLayout>
+        <TextView
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:text="@{chatRoomListViewModel.modelRepository.getChatRoomModelAt(position).messageModelLast.senderSideDate}"
+            android:textSize="15sp"
+            android:paddingTop="20sp"
+            android:gravity="center_horizontal">
+        </TextView>
     </LinearLayout>
 </layout>

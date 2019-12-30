@@ -1,6 +1,7 @@
 package com.example.websocketclient.models;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.websocketclient.database.AppDatabase;
 import com.example.websocketclient.database.entity.UserInformation;
@@ -43,7 +44,6 @@ public class ModelRepository {
     private ArrayList<ChatRoomModel> chatRoomModels;
     private ArrayList<FriendModel> friendModels;
     private ArrayList<RequestModel> requestModels;
-    private ArrayList<MessageModel> messageModels;
 
     private FriendModel selectedFriendModel;
     private ChatRoomModel selectedChatRoomModel;
@@ -111,6 +111,18 @@ public class ModelRepository {
         return requestModels.get(position);
     }
 
+    public void addRequestModel(RequestModel requestModel) {
+        if (requestModelHashMap.containsKey(requestModel.getSenderName()) == false) {
+            requestModelHashMap.put(requestModel.getSenderName(), requestModel);
+            requestModels.add(requestModelHashMap.get(requestModel.getSenderName()));
+        }
+    }
+
+    public void eraseRequestModelByPosition(int position) {
+        requestModelHashMap.remove(requestModels.get(position).getSenderName());
+        requestModels.remove(position);
+    }
+
     // ================================== FriendModel ==============================================
     public HashMap<String, FriendModel> getFriendModelHashMap() {
         return friendModelHashMap;
@@ -122,6 +134,13 @@ public class ModelRepository {
 
     public FriendModel getFriendModelAt(int position) {
         return friendModels.get(position);
+    }
+
+    public void addFriendModel(FriendModel friendModel) {
+        if (friendModelHashMap.containsKey(friendModel.getFriendName()) == false) {
+            friendModelHashMap.put(friendModel.getFriendName(), friendModel);
+            friendModels.add(friendModelHashMap.get(friendModel.getFriendName()));
+        }
     }
 
 
@@ -138,15 +157,48 @@ public class ModelRepository {
         return chatRoomModels.get(position);
     }
 
+    public void addChatRoomModelByName(String targetUser) {
+
+        String chatChannel = "/queue/" + targetUser;
+
+        if (chatRoomModelHashMap.containsKey(chatChannel) == false) {
+            ChatRoomModel chatRoomModel = new ChatRoomModel();
+
+            chatRoomModel.setSenderChatChannel(chatChannel);
+            chatRoomModel.setChatRoomName(targetUser);
+            chatRoomModel.getParticipants().add(targetUser);
+            chatRoomModel.getParticipants().add(userInformation.getUserName());
+            chatRoomModel.setType(0);
+
+            chatRoomModelHashMap.put(chatChannel, chatRoomModel);
+            chatRoomModels.add(chatRoomModelHashMap.get(chatChannel));
+        }
+    }
+
+    public void addChatRoomModelByMessageModel(MessageModel messageModel) {
+        String chatChannel = messageModel.getSenderChatChannel();
+
+        if (chatRoomModelHashMap.containsKey(chatChannel) == true) {
+            chatRoomModelHashMap.get(chatChannel).getMessageModels().add(messageModel);
+        }
+        else {
+            ChatRoomModel newChatRoomModel = new ChatRoomModel();
+
+            newChatRoomModel.setSenderChatChannel(chatChannel);
+            newChatRoomModel.setChatRoomName(messageModel.getSenderName());
+            newChatRoomModel.getMessageModels().add(messageModel);
+            newChatRoomModel.getParticipants().add(messageModel.getSenderName());
+            newChatRoomModel.getParticipants().add(userInformation.getUserName());
+            newChatRoomModel.setType(0);
+
+            chatRoomModelHashMap.put(chatChannel, newChatRoomModel);
+            chatRoomModels.add(chatRoomModelHashMap.get(chatChannel));
+
+            Log.d("TestTest", "HashMapSize : " + chatRoomModelHashMap.size() + ", ListSize : " + chatRoomModels.size());
+        }
+    }
+
     // ================================== MessageModel ==============================================
-
-    public ArrayList<MessageModel> getMessageModels() {
-        return this.messageModels;
-    }
-
-    public MessageModel getMessageModelAt(int position) {
-        return this.messageModels.get(position);
-    }
 
     public UserInformation getCurUserInformation() {
         return userInformation;

@@ -1,18 +1,43 @@
 package com.example.websocketclient.models;
 
+import java.util.StringTokenizer;
+
 public class MessageModel {
-    private String senderSideDate;
-    private String senderName;
-    private String chatRoomName;
-    private String contents;
+    private String senderSideDate = "";
+    private String senderName = "";
+    private String senderChatChannel = "";
+    private String contents = "";
 
     public MessageModel() {
 
     }
 
     public String getSenderSideDate() {
-        // 날짜를 원하는 형태로 변환해서 Return 해야한다.
-        return senderSideDate;
+        String ret;
+        StringTokenizer stringTokenizer = new StringTokenizer(senderSideDate, " ");
+
+        ret = stringTokenizer.nextToken();
+
+        String time = stringTokenizer.nextToken();
+
+        stringTokenizer = new StringTokenizer(time, ":");
+
+        String hourStr = stringTokenizer.nextToken();
+        String minute = stringTokenizer.nextToken();
+
+        int hourInt = Integer.parseInt(hourStr);
+
+        if (hourInt < 12) {
+            ret += " 오전 ";
+        }
+        else {
+            hourInt -= 12;
+            ret += " 오후 ";
+        }
+
+        ret += Integer.toString(hourInt) + ":" + minute;
+
+        return ret;
     }
 
     public void setSenderSideDate(String senderSideDate) {
@@ -27,12 +52,12 @@ public class MessageModel {
         this.senderName = senderName;
     }
 
-    public String getChatRoomName() {
-        return chatRoomName;
+    public String getSenderChatChannel() {
+        return senderChatChannel;
     }
 
-    public void setChatRoomName(String chatRoomName) {
-        this.chatRoomName = chatRoomName;
+    public void setSenderChatChannel(String senderChatChannel) {
+        this.senderChatChannel = senderChatChannel;
     }
 
     public String getContents() {

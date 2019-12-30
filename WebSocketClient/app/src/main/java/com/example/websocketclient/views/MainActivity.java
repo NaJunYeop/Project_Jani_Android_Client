@@ -46,12 +46,7 @@ public class MainActivity extends AppCompatActivity {
         pageAdapter.setMainViewModel(mainViewModel);
         activityMainBinding.mainViewPager.setAdapter(pageAdapter);
 
-        /*activityMainBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Binds ChatRoomAdapter.class
-        chatRoomAdapter = new ChatRoomAdapter(activityMainBinding.getMainViewModel());
-        activityMainBinding.setChatRoomAdapter(chatRoomAdapter);
-        activityMainBinding.recyclerView.setAdapter(chatRoomAdapter);*/
+        activityMainBinding.mainTabLayout.setupWithViewPager(activityMainBinding.mainViewPager);
     }
 
     public void stompLiveDataInit() {
@@ -77,20 +72,5 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-        // Message Event가 발생하면 Chat Room에서 Message를 띄워줘야한다.
-        /*mainViewModel.getMessageEvent()
-                .observe(this, new Observer<Integer>() {
-                    @Override
-                    public void onChanged(Integer position) {
-                        activityMainBinding.recyclerView.scrollToPosition(position);
-                    }
-                });*/
-    }
-
-    @Override
-    protected void onDestroy() {
-            super.onDestroy();
-            Log.i(TAG, "MainActivity onDestroy() called ...");
     }
 }

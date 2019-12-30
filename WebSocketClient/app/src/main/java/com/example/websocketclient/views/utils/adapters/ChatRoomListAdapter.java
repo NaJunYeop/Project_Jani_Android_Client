@@ -1,7 +1,6 @@
 package com.example.websocketclient.views.utils.adapters;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -10,16 +9,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.websocketclient.R;
 import com.example.websocketclient.databinding.FragmentChatRoomListUnitBinding;
-import com.example.websocketclient.viewmodels.MainViewModel;
+import com.example.websocketclient.viewmodels.ChatRoomListViewModel;
 
 public class ChatRoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private MainViewModel mainViewModel;
+    private ChatRoomListViewModel chatRoomListViewModel;
     private LayoutInflater inflater;
     private FragmentChatRoomListUnitBinding fragmentChatRoomListUnitBinding;
 
-    public ChatRoomListAdapter(MainViewModel mainViewModel) {
-        this.mainViewModel = mainViewModel;
+    public ChatRoomListAdapter(ChatRoomListViewModel chatRoomListViewModel) {
+        this.chatRoomListViewModel = chatRoomListViewModel;
     }
 
     @NonNull
@@ -33,23 +32,24 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ((ChatRoomListViewHolder)holder).setBinding(mainViewModel, position);
+        ((ChatRoomListViewHolder)holder).setBinding(chatRoomListViewModel, position);
     }
 
     @Override
     public int getItemCount() {
-        return mainViewModel.getModelRepository().getChatRoomList().size();
+        return chatRoomListViewModel.getModelRepository().getChatRoomList().size();
     }
 
     public class ChatRoomListViewHolder extends RecyclerView.ViewHolder {
         private FragmentChatRoomListUnitBinding fragmentChatRoomListUnitBinding;
+
         public ChatRoomListViewHolder(@NonNull FragmentChatRoomListUnitBinding fragmentChatRoomListUnitBinding) {
             super(fragmentChatRoomListUnitBinding.getRoot());
             this.fragmentChatRoomListUnitBinding = fragmentChatRoomListUnitBinding;
         }
 
-        public void setBinding(MainViewModel mainViewModel, int position) {
-            fragmentChatRoomListUnitBinding.setMainViewModel(mainViewModel);
+        public void setBinding(ChatRoomListViewModel chatRoomListViewModel, int position) {
+            fragmentChatRoomListUnitBinding.setChatRoomListViewModel(chatRoomListViewModel);
             fragmentChatRoomListUnitBinding.setPosition(position);
             fragmentChatRoomListUnitBinding.executePendingBindings();
         }

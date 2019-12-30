@@ -3,6 +3,7 @@ package com.example.websocketclient.views.utils.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ public class FriendListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragmentFriendListBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_friend_list, container, false);
-        fragmentFriendListBinding.setLifecycleOwner(this);
+        fragmentFriendListBinding.setLifecycleOwner(getViewLifecycleOwner());
 
         friendListFragmentViewModel = ViewModelProviders.of(this).get(FriendListFragmentViewModel.class);
         fragmentFriendListBinding.setFriendListViewModel(friendListFragmentViewModel);
@@ -47,6 +48,8 @@ public class FriendListFragment extends Fragment {
         fragmentFriendListBinding.friendListRecyclerView.setAdapter(friendListAdapter);
 
         getLiveDataEvent();
+
+        Log.d("TesTest", "Is Executed ????");
 
         return fragmentFriendListBinding.getRoot();
     }

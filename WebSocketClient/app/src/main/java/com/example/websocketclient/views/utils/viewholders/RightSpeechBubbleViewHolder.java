@@ -19,7 +19,7 @@ public class RightSpeechBubbleViewHolder extends RecyclerView.ViewHolder {
     public void setBinding(ChatRoomViewModel chatRoomViewModel, int position) {
         rightSpeechBubbleBinding.setChatRoomViewModel(chatRoomViewModel);
         rightSpeechBubbleBinding.setPosition(position);
-        //rightSpeechBubbleBinding.setMessageModel(messageModel);
+
         //This forces the bindings to run immediately instead of delaying them until the next frame.
         rightSpeechBubbleBinding.executePendingBindings();
     }

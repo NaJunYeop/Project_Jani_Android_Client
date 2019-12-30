@@ -10,25 +10,15 @@ import android.widget.Toast;
 
 import com.example.websocketclient.R;
 import com.example.websocketclient.databinding.ActivityAddFriendBinding;
-import com.example.websocketclient.models.RequestModel;
 import com.example.websocketclient.viewmodels.AddFriendViewModel;
 import com.example.websocketclient.views.utils.dialogs.AddFriendDialog;
 import com.example.websocketclient.views.utils.dialogs.OneButtonDialog;
 import com.google.gson.Gson;
 
-import io.reactivex.disposables.CompositeDisposable;
-
 public class AddFriendActivity extends AppCompatActivity {
-
-    private final String TAG = "AddFriendLog";
-    private final int OK = 0;
-    private final int NO = 1;
-
     private ActivityAddFriendBinding activityAddFriendBinding;
     private AddFriendViewModel addFriendViewModel;
-    private RequestModel requestModel;
     private Gson gson = new Gson();
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private AddFriendDialog addFriendDialog;
     private OneButtonDialog oneButtonDialog;
