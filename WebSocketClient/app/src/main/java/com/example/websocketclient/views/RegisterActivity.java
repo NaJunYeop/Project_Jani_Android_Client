@@ -42,9 +42,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Test 하면서 SQLite User Information 삭제 할 일 있으면 밑의 주석을 없애고 실행하시오.
-        //db = AppDatabase.getInstance(this);
-
-        /*completable = db.userDao().deleteAll();
+        /*db = AppDatabase.getInstance(this);
+        completable = db.userDao().deleteAll();
         completable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

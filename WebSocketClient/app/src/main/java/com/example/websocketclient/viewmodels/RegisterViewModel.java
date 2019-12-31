@@ -2,6 +2,7 @@ package com.example.websocketclient.viewmodels;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
@@ -17,8 +18,11 @@ import com.example.websocketclient.retrofit.utils.RetrofitCommunicationService;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.MaybeObserver;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class RegisterViewModel extends AndroidViewModel {
 

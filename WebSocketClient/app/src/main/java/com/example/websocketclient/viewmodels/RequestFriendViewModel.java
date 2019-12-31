@@ -85,7 +85,6 @@ public class RequestFriendViewModel extends AndroidViewModel {
             requestModel.setStatus("ACK");
 
             modelRepository.addFriendModel(friendModel);
-            //modelRepository.addFriendList(friendModel);
 
             compositeDisposable.add(modelRepository
                     .stompSendMessage("/app/req/" + requestModel.getSenderName(), gson.toJson(requestModel))

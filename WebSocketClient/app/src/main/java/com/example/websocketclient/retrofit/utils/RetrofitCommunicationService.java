@@ -1,5 +1,9 @@
 package com.example.websocketclient.retrofit.utils;
 
+import com.example.websocketclient.models.ChatRoomModel;
+import com.example.websocketclient.models.FriendModel;
+import com.example.websocketclient.models.MessageModel;
+import com.example.websocketclient.models.RequestModel;
 import com.example.websocketclient.retrofit.models.RegisterModel;
 
 import java.util.List;
@@ -19,4 +23,17 @@ public interface RetrofitCommunicationService {
 
     @POST("/find-user")
     Maybe<RegisterModel> findUserInformation(@Body RegisterModel registerModel);
+
+    @POST("/get-request-model")
+    Observable<List<RequestModel>> getRequstModelList(@Body String userName);
+
+    @POST("/get-friend-model")
+    Observable<List<FriendModel>> getFriendModelList(@Body String userName);
+
+    @POST("/get-chat-room-model")
+    Observable<List<ChatRoomModel>> getChatRoomModelList(@Body String userName);
+
+    @POST("/get-message-model")
+    Observable<List<MessageModel>> getMessageModelList(@Body String chatChannel);
+
 }

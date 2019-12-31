@@ -18,7 +18,11 @@ import io.reactivex.Completable;
 import io.reactivex.CompletableTransformer;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.MaybeObserver;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
@@ -45,10 +49,17 @@ public class ModelRepository {
     private ArrayList<FriendModel> friendModels;
     private ArrayList<RequestModel> requestModels;
 
+    //private Observable<Boolean> doneInitiation;
+    private Observable<Integer> doneInitiation;
+
     private FriendModel selectedFriendModel;
     private ChatRoomModel selectedChatRoomModel;
 
     private MainViewModel mainViewModel;
+
+    private Disposable disposable;
+
+    private int count = 0;
 
 
     // Singleton Pattern
@@ -61,11 +72,25 @@ public class ModelRepository {
     }
 
     public ModelRepository() {
-        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://" + ServerModel.SERVER_IP + ":" + ServerModel.SERVER_PORT + "/janiwss/websocket");
 
+        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://" + ServerModel.SERVER_IP + ":" + ServerModel.SERVER_PORT + "/janiwss/websocket");
         requestModels = new ArrayList<>(requestModelHashMap.values());
         friendModels = new ArrayList<>(friendModelHashMap.values());
         chatRoomModels = new ArrayList<>(chatRoomModelHashMap.values());
+    }
+
+    public Observable<Boolean> setInitialModels() {
+
+        setInitialRequestModelHashMap();
+        setInitialFriendModelHashMap();
+        setInitialChatRoomModelHashMap();
+
+        while (true) {
+            if (count == 4) {
+                count = 0;
+                return Observable.just(true);
+            }
+        }
     }
 
     public void setReferences(Context context) {
@@ -99,6 +124,13 @@ public class ModelRepository {
     }
 
     // ================================== RequestModel =============================================
+
+    public Observable<List<RequestModel>> setInitialRequestModelHashMap() {
+        return retrofitCommunicationService.getRequstModelList(userInformation.getUserName())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public HashMap<String, RequestModel> getRequestModelHashMap() {
         return this.requestModelHashMap;
     }
@@ -124,6 +156,12 @@ public class ModelRepository {
     }
 
     // ================================== FriendModel ==============================================
+
+    public Observable<List<FriendModel>> setInitialFriendModelHashMap() {
+        return retrofitCommunicationService.getFriendModelList(userInformation.getUserName())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
     public HashMap<String, FriendModel> getFriendModelHashMap() {
         return friendModelHashMap;
     }
@@ -145,6 +183,24 @@ public class ModelRepository {
 
 
     // ================================== ChatRoomModel ============================================
+
+    public Observable<List<ChatRoomModel>> setInitialChatRoomModelHashMap() {
+        return retrofitCommunicationService.getChatRoomModelList(userInformation.getUserName())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public void setInitialMessageModelHashMap() {
+
+        if (chatRoomModels.size() > 0) {
+            for (ChatRoomModel crm : chatRoomModels) {
+                retrofitCommunicationService.getMessageModelList(crm.getSenderChatChannel())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            }
+        }
+    }
+
     public HashMap<String, ChatRoomModel> getChatRoomModelHashMap() {
         return this.chatRoomModelHashMap;
     }
@@ -216,7 +272,8 @@ public class ModelRepository {
     }
 
     public Completable dbInsertUserInformation(UserInformation userInformation) {
-        return db.userDao().insertUserName(userInformation).subscribeOn(Schedulers.io())
+        return db.userDao().insertUserName(userInformation)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 

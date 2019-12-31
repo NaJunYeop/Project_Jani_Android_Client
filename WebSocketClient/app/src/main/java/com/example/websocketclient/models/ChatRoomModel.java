@@ -5,11 +5,11 @@ import java.util.ArrayList;
 public class ChatRoomModel {
     private final int QUEUE = 0;
     private final int TOPIC = 1;
-    private String senderChatChannel;
+    private String senderChatChannel = "";
     private String chatRoomName;
     private int type;
-    private ArrayList<String> participants = new ArrayList<>();
-    private ArrayList<MessageModel> messageModels = new ArrayList<>();
+    private ArrayList<String> participants;
+    private ArrayList<MessageModel> messageModels;
 
     public String getSenderChatChannel() {
         return senderChatChannel;
@@ -36,6 +36,10 @@ public class ChatRoomModel {
     }
 
     public ArrayList<MessageModel> getMessageModels() {
+
+        if (messageModels == null) {
+            return messageModels = new ArrayList<>();
+        }
         return messageModels;
     }
 
@@ -57,6 +61,9 @@ public class ChatRoomModel {
     }
 
     public ArrayList<String> getParticipants() {
+        if (participants == null) {
+            return participants = new ArrayList<>();
+        }
         return participants;
     }
 
