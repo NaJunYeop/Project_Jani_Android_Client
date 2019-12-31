@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="position"
+            type="Integer" />
+        <variable
+            name="friendListViewModel"
+            type="com.example.websocketclient.viewmodels.FriendListFragmentViewModel" />
+        <variable
+            name="mainViewModel"
+            type="com.example.websocketclient.viewmodels.MainViewModel" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80sp"
+        android:paddingBottom="10sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="@{() -> friendListViewModel.listItemClicked(position)}">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="25sp"
+            android:gravity="center_vertical"
+            android:paddingLeft="20sp"
+            android:text="@{friendListViewModel.getModelRepository().getFriendModelAt(position).friendName}">
+        </TextView>
+
+    </LinearLayout>
+</layout>

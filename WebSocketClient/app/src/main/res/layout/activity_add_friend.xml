@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="addFriendViewModel"
+            type="com.example.websocketclient.viewmodels.AddFriendViewModel" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal|center_vertical">
+
+        <EditText
+            android:id="@+id/user_name_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="20sp"
+            android:text="@={addFriendViewModel.userNameEdit}"
+            android:hint="3-10자리의 상대방 아이디를 입력해주세요">
+
+        </EditText>
+        <Button
+            android:id="@+id/find_user_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="요청"
+            android:textSize="25dp"
+            android:onClick="@{() -> addFriendViewModel.findUserButtonClicked()}"/>
+
+    </LinearLayout>
+</layout>

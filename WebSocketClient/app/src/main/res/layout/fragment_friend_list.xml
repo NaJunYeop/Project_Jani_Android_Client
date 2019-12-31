@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="friendListViewModel"
+            type="com.example.websocketclient.viewmodels.FriendListFragmentViewModel" />
+        <variable
+            name="mainViewModel"
+            type="com.example.websocketclient.viewmodels.MainViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                android:layout_weight="1.5"
+                app:layout_constraintBottom_toTopOf="@+id/friend_list_recycler_view">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="친구 추가"
+                    android:textStyle="bold"
+                    android:onClick="@{() -> friendListViewModel.addFriendButtonClicked()}">
+                </Button>
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="미확인 친구 요청"
+                    android:textStyle="bold"
+                    android:onClick="@{() -> friendListViewModel.uncheckedFriendRequestButtonClicked()}">
+                </Button>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="20">
+
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/friend_list_refresh"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:refreshing="@{friendListViewModel.isLoading}"
+                    app:onRefreshListener="@{() -> friendListViewModel.onRefresh()}">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/friend_list_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

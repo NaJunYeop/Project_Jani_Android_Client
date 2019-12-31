@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="addFriendViewModel"
+            type="com.example.websocketclient.viewmodels.AddFriendViewModel" />
+    </data>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:text="@{addFriendViewModel.oneButtonTextView}"
+            android:gravity="center_horizontal">
+        </TextView>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="확인"
+            android:onClick="@{() -> addFriendViewModel.notExistButtonClicked()}">
+        </Button>
+    </LinearLayout>
+</layout>
