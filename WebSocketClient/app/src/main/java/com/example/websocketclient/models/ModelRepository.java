@@ -4,8 +4,11 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.websocketclient.database.AppDatabase;
+import com.example.websocketclient.database.entity.ChatRoomModel;
+import com.example.websocketclient.database.entity.MessageModel;
+import com.example.websocketclient.database.entity.RegisterModel;
+import com.example.websocketclient.database.entity.RequestModel;
 import com.example.websocketclient.database.entity.UserInformation;
-import com.example.websocketclient.retrofit.models.RegisterModel;
 import com.example.websocketclient.retrofit.utils.RetrofitClient;
 import com.example.websocketclient.retrofit.utils.RetrofitCommunicationService;
 import com.example.websocketclient.viewmodels.MainViewModel;
@@ -18,7 +21,6 @@ import io.reactivex.Completable;
 import io.reactivex.CompletableTransformer;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.MaybeObserver;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -83,20 +85,19 @@ public class ModelRepository {
 
         setInitialRequestModelHashMap();
         setInitialFriendModelHashMap();
-        setInitialChatRoomModelHashMap();
+        //setInitialChatRoomModelHashMap();
 
-        while (true) {
-            if (count == 4) {
-                count = 0;
-                return Observable.just(true);
-            }
-        }
+        return Observable.just(true);
     }
 
     public void setReferences(Context context) {
         this.context = context;
         db = AppDatabase.getInstance(this.context);
         retrofitCommunicationService = RetrofitClient.getInstance();
+    }
+
+    synchronized public void raiseCount() {
+        count++;
     }
 
     public void setMainViewModel(MainViewModel mainViewModel) {
@@ -125,10 +126,33 @@ public class ModelRepository {
 
     // ================================== RequestModel =============================================
 
-    public Observable<List<RequestModel>> setInitialRequestModelHashMap() {
-        return retrofitCommunicationService.getRequstModelList(userInformation.getUserName())
+    public void setInitialRequestModelHashMap() {
+        retrofitCommunicationService.getRequstModelList(userInformation.getUserName())
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<RequestModel>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<RequestModel> requestModels) {
+                        for (RequestModel rm : requestModels) {
+                            Log.i("newTest", rm.getSenderName());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     public HashMap<String, RequestModel> getRequestModelHashMap() {
@@ -157,10 +181,33 @@ public class ModelRepository {
 
     // ================================== FriendModel ==============================================
 
-    public Observable<List<FriendModel>> setInitialFriendModelHashMap() {
-        return retrofitCommunicationService.getFriendModelList(userInformation.getUserName())
+    public void setInitialFriendModelHashMap() {
+        retrofitCommunicationService.getFriendModelList(userInformation.getUserName())
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<FriendModel>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<FriendModel> friendModels) {
+                        for (FriendModel fm : friendModels) {
+                            Log.i("newTest", fm.getFriendName());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
     public HashMap<String, FriendModel> getFriendModelHashMap() {
         return friendModelHashMap;

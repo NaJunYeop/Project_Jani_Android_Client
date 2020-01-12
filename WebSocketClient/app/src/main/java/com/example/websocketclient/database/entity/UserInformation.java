@@ -7,37 +7,43 @@ import androidx.room.PrimaryKey;
 import java.io.Serializable;
 
 @Entity(tableName = "user_information")
-public class UserInformation implements Serializable {
+public class UserInformation {
     @PrimaryKey(autoGenerate = true)
-    private int uid;
+    @ColumnInfo(name = "user_info_id")
+    private int userInfoId;
 
-    @ColumnInfo(name = "user_name")
-    private String userName;
+    @ColumnInfo(name = "user_info_owner")
+    private String userInfoOwner;
 
-    @ColumnInfo(name = "topic_identifier")
-    private int topicIdentifier;
+    @ColumnInfo(name = "user_info_user_name")
+    private String userInfoUserName;
 
-    public void setUid(int uid) {
-        this.uid = uid;
+    public UserInformation(String userInfoOwner, String userInfoUserName) {
+        this.userInfoOwner = userInfoOwner;
+        this.userInfoUserName = userInfoUserName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public int getUserInfoId() {
+        return userInfoId;
     }
 
-    public int getUid() {
-        return uid;
+    public String getUserInfoOwner() {
+        return userInfoOwner;
     }
 
-    public String getUserName() {
-        return userName;
+    public void setUserInfoOwner(String userInfoOwner) {
+        this.userInfoOwner = userInfoOwner;
     }
 
-    public int getTopicIdentifier() {
-        return topicIdentifier;
+    public void setUserInfoId(int userInfoId) {
+        this.userInfoId = userInfoId;
     }
 
-    public void setTopicIdentifier(int topicIdentifier) {
-        this.topicIdentifier = topicIdentifier;
+    public String getUserInfoUserName() {
+        return userInfoUserName;
+    }
+
+    public void setUserInfoUserName(String userInfoUserName) {
+        this.userInfoUserName = userInfoUserName;
     }
 }

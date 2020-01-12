@@ -42,7 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Test 하면서 SQLite User Information 삭제 할 일 있으면 밑의 주석을 없애고 실행하시오.
-        /*db = AppDatabase.getInstance(this);
+        db = AppDatabase.getInstance(this);
         completable = db.userDao().deleteAll();
         completable
                 .subscribeOn(Schedulers.io())
@@ -62,7 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onError(Throwable e) {
                         Log.i(TAG, "db error!!!");
                     }
-                });*/
+                });
 
         // 이 Activity(RegisterActivity)를 띄워주기 전에 먼저 SQLite DB에서 사용자를 조회한 후
         // 사용자가 존재한다면 바로 Main Activity로 전환

@@ -38,8 +38,21 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:textSize="20sp"
+                android:maxLength="10"
                 android:text="@={registerViewModel.userNameEdit}"
                 android:hint="3-10자리의 아이디를 입력해주세요">
+
+            </EditText>
+            <EditText
+                android:id="@+id/user_password_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:inputType="textPassword"
+                android:textSize="20sp"
+                android:text="@={registerViewModel.userNameEdit}"
+                android:maxLength="10"
+                android:hint="3-10자리의 비밀번호를 입력해주세요.">
 
             </EditText>
             <Button

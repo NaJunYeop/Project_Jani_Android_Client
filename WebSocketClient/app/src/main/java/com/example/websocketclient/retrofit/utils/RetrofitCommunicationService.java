@@ -1,20 +1,16 @@
 package com.example.websocketclient.retrofit.utils;
 
-import com.example.websocketclient.models.ChatRoomModel;
+import com.example.websocketclient.database.entity.ChatRoomModel;
 import com.example.websocketclient.models.FriendModel;
-import com.example.websocketclient.models.MessageModel;
-import com.example.websocketclient.models.RequestModel;
-import com.example.websocketclient.retrofit.models.RegisterModel;
+import com.example.websocketclient.database.entity.MessageModel;
+import com.example.websocketclient.database.entity.RequestModel;
+import com.example.websocketclient.database.entity.RegisterModel;
 
 import java.util.List;
 
-import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
-import io.reactivex.Single;
-import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface RetrofitCommunicationService {

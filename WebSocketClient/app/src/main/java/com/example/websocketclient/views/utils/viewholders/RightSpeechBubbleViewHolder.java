@@ -4,9 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.websocketclient.databinding.RightSpeechBubbleBinding;
-import com.example.websocketclient.models.MessageModel;
 import com.example.websocketclient.viewmodels.ChatRoomViewModel;
-import com.example.websocketclient.viewmodels.MainViewModel;
 
 public class RightSpeechBubbleViewHolder extends RecyclerView.ViewHolder {
     private RightSpeechBubbleBinding rightSpeechBubbleBinding;

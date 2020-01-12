@@ -10,9 +10,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.websocketclient.models.FriendModel;
-import com.example.websocketclient.models.MessageModel;
+import com.example.websocketclient.database.entity.MessageModel;
 import com.example.websocketclient.models.ModelRepository;
-import com.example.websocketclient.models.RequestModel;
+import com.example.websocketclient.database.entity.RequestModel;
 import com.google.gson.Gson;
 
 import java.io.Serializable;

@@ -10,8 +10,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.websocketclient.models.ChatRoomModel;
-import com.example.websocketclient.models.MessageModel;
+import com.example.websocketclient.database.entity.ChatRoomModel;
+import com.example.websocketclient.database.entity.MessageModel;
 import com.example.websocketclient.models.ModelRepository;
 import com.google.gson.Gson;
 

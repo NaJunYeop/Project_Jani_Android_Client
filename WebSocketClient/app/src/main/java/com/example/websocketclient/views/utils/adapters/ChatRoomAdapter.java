@@ -11,14 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.websocketclient.R;
 import com.example.websocketclient.databinding.LeftSpeechBubbleBinding;
 import com.example.websocketclient.databinding.RightSpeechBubbleBinding;
-import com.example.websocketclient.models.MessageModel;
 import com.example.websocketclient.viewmodels.ChatRoomViewModel;
-import com.example.websocketclient.viewmodels.MainViewModel;
-import com.example.websocketclient.views.MainActivity;
 import com.example.websocketclient.views.utils.viewholders.LeftSpeechBubbleViewHolder;
 import com.example.websocketclient.views.utils.viewholders.RightSpeechBubbleViewHolder;
-
-import java.util.ArrayList;
 
 public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final String TAG = "ChatRoomAdapterLog";
