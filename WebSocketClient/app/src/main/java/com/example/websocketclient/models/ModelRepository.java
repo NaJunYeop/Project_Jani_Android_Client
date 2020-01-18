@@ -23,6 +23,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -40,7 +41,7 @@ public class ModelRepository {
     private Context context;
     private AppDatabase db;
     private RetrofitCommunicationService retrofitCommunicationService;
-    private UserInformation userInformation = new UserInformation();
+    private RegisterModel userRegisterModel;
     private StompClient mStompClient;
 
     private HashMap<String, ChatRoomModel> chatRoomModelHashMap = new HashMap<>();
@@ -81,6 +82,14 @@ public class ModelRepository {
         chatRoomModels = new ArrayList<>(chatRoomModelHashMap.values());
     }
 
+    public void setUserRegisterModel(RegisterModel registerModel) {
+        this.userRegisterModel = registerModel;
+    }
+
+    public RegisterModel getUserRegisterModel() {
+        return this.userRegisterModel;
+    }
+
     public Observable<Boolean> setInitialModels() {
 
         setInitialRequestModelHashMap();
@@ -94,10 +103,6 @@ public class ModelRepository {
         this.context = context;
         db = AppDatabase.getInstance(this.context);
         retrofitCommunicationService = RetrofitClient.getInstance();
-    }
-
-    synchronized public void raiseCount() {
-        count++;
     }
 
     public void setMainViewModel(MainViewModel mainViewModel) {
@@ -303,17 +308,21 @@ public class ModelRepository {
 
     // ================================== MessageModel ==============================================
 
-    public UserInformation getCurUserInformation() {
-        return userInformation;
-    }
-
-    public void setCurUserInformation(UserInformation userInformation) {
-        this.userInformation.setUserName(userInformation.getUserName());
-    }
-
     // ============================= Room Databse ==================================================
-    public Maybe<UserInformation> dbGetUserInformation() {
-        return db.userDao().isUserExist()
+    public Maybe<RegisterModel> getClientDBRegisterModel() {
+        return db.registerModelDao().getUserRegisterModel()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Completable insertClientDBRegisterModel(RegisterModel registerModel) {
+        return db.registerModelDao().insertRegisterModel(registerModel)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<String> insertServerDBRegisterModel(RegisterModel userRegisterModel) {
+        return retrofitCommunicationService.registerUserRegisterModelToServer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -325,8 +334,8 @@ public class ModelRepository {
     }
 
     // =============================== Retrofit ====================================================
-    public Maybe<RegisterModel> retrofitGetUserInformation(RegisterModel registerModel) {
-        return retrofitCommunicationService.getUserInformation(registerModel)
+    public Single<String> retrofitCheckDuplicateUserName(String userName) {
+        return retrofitCommunicationService.userNameDuplicationCheck(userName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

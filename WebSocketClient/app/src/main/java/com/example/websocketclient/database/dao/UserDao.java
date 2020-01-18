@@ -15,7 +15,7 @@ import io.reactivex.Maybe;
 @Dao
 public interface UserDao {
 
-    @Query("SELECT * FROM user_information")
+    @Query("SELECT * FROM register_model")
     Maybe<UserInformation> isUserExist();
 
     /*

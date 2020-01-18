@@ -10,12 +10,16 @@ import java.util.List;
 
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface RetrofitCommunicationService {
+    @POST("/duplication_check")
+    Single<String> userNameDuplicationCheck(@Body String userName);
+
     @POST("/user-registration")
-    Maybe<RegisterModel> getUserInformation(@Body RegisterModel registerModel);
+    Single<RegisterModel> registerUserRegisterModelToServer(@Body RegisterModel registerModel);
 
     @POST("/find-user")
     Maybe<RegisterModel> findUserInformation(@Body RegisterModel registerModel);

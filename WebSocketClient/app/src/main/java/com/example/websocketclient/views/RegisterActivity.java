@@ -32,10 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     private RegisterViewModel registerViewModel;
     private AppDatabase db;
     private Completable completable;
-
-    public ObservableField<String> userNameEdit = new ObservableField<>();
-
-    ActivityRegisterBinding activityRegisterBinding;
+    private ActivityRegisterBinding activityRegisterBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +52,29 @@ public class RegisterActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete() {
-                        Log.i(TAG, "db deleted!!!");
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i(TAG, "db error!!!");
+
+                    }
+                });
+
+        // SQLite DB를 조회하여 사용자가 존재하는지에 대한 Event를 ViewModel로 부터 받는다.
+        registerViewModel.getClientDBEvent()
+                .observe(this, new Observer<String>() {
+                    @Override
+                    public void onChanged(String result) {
+                        if (result.equals("N_EXIST")) {
+                            showRegisterView();
+                        }
+                        else {
+                            // ["EXIST" : 이미 가입된 사용자]
+                            // ["SUCCESS" : 가입 성공 시]
+                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
                     }
                 });
 
@@ -81,23 +95,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void beforeShowRegisterView() {
         dataBindingInit();
 
-        // SQLite DB를 조회하여 사용자가 존재하는지에 대한 Event를 ViewModel로 부터 받는다.
-        registerViewModel.getDBSelEvent()
-                .observe(this, new Observer<UserInformation>() {
-                    @Override
-                    public void onChanged(UserInformation userInformation) {
-                        if (userInformation.getUserName().equals("ABS")) {
-                            Log.i(TAG, "There is no such a user");
-                            showRegisterView();
-                        } else {
-                            Log.i(TAG, userInformation.getUserName() + "is logged on");
-                            Toast.makeText(RegisterActivity.this, userInformation.getUserName(), Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                            startActivity(intent);
-                        }
-                    }
-                });
-        registerViewModel.checkUserExist();
+        registerViewModel.checkRegisterModelExist();
     }
 
     public void showRegisterView() {
@@ -108,35 +106,31 @@ public class RegisterActivity extends AppCompatActivity {
                 .observe(this, new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
-                        if (s.equals("EXT")) {
-                            Log.i(TAG, "From server : Already exist user name");
+                        if (s.equals("DUP")) {
+                            Log.i(TAG, "From server : User name already exist");
                             Toast.makeText(RegisterActivity.this, "존재하는 이름입니다.\n다른 이름을 입력해 주세요.", Toast.LENGTH_SHORT).show();
                         }
-                        else {
-                            // 중복된 User Name이 아닌 경우 SQLite에 저장.
-                            registerViewModel.storeUserInformation();
+                        else if (s.equals("CHK")){
+                            // 아이디를 사용할 것인지 Dialog로 물어봐야한다.
+                            // 중복된 User Name이 아닌 경우 MySQL에 저장.
+                            registerViewModel.storeUserRegisterModelToServer();
                         }
                     }
                 });
 
-        // SQLite에 저장하고 String Event를 받아온다.
-        // SUCC이라는 String을 받았을 경우 성공적으로 SQLite에 저장되었다는 뜻이며 Main Activity로 화면을 전환한다.
-        registerViewModel.getDBInsEvent()
-                .observe(this, new Observer<UserInformation>() {
+        registerViewModel.getServerDBEvent()
+                .observe(this, new Observer<String>() {
                     @Override
-                    public void onChanged(UserInformation userInformation) {
-                        Log.i(TAG, "DB : User information successfully inserted into sqlite");
-                        Log.i(TAG, "Start Main Activity");
-                        Toast.makeText(RegisterActivity.this, "등록 완료.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                        intent.putExtra("userInfo", userInformation);
-                        startActivity(intent);
+                    public void onChanged(String s) {
+                        if (s.equals("FAIL")) {
+                            // Some Business Logic Here ...
+                        }
                     }
                 });
     }
 
     // Main Activity로 화면을 저장 할 경우 더 이상 이 Activity는 필요 없으므로 종료시켜 준다.
-    // finish() Method를 사용하지 않으면 Main Activity에서 뒤로가기 버튼을 눌렀을 때 바로 종료되징 않고 이 Activity가 다시 실행된다.
+    // finish() Method를 사용하지 않으면 Main Activity에서 뒤로가기 버튼을 눌렀을 때 바로 종료되지 않고 이 Activity가 다시 실행된다.
     @Override
     protected void onPause() {
         super.onPause();

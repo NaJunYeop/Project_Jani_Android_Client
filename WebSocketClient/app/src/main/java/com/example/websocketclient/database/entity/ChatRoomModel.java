@@ -16,7 +16,7 @@ public class ChatRoomModel {
     @ColumnInfo(name = "chat_room_count")
     private int chatRoomCount;
 
-    @ColumnInfo(name = "chat_room_count")
+    @ColumnInfo(name = "chat_room_owner")
     private String chatRoomOwner;
 
     @ColumnInfo(name = "chat_channel")
