@@ -63,12 +63,12 @@ public class RequestFriendViewModel extends AndroidViewModel {
         return modelRepository;
     }
 
-    public void acceptButtonClicked(int position) {
+    /*public void acceptButtonClicked(int position) {
         flag = ACCEPT;
         dialogTextView.set("[ " + modelRepository.getRequestModelAt(position).getSenderName() + " ] 님을 친구로 추가 하시겠습니까?");
         list_position = position;
         buttonClickEvent.setValue(true);
-    }
+    }*/
 
     public void denyButtonClicked(int position) {
         flag = DENY;
@@ -77,7 +77,7 @@ public class RequestFriendViewModel extends AndroidViewModel {
         buttonClickEvent.setValue(true);
     }
 
-    public void duplicateAcceptButtonClicked() {
+    /*public void duplicateAcceptButtonClicked() {
         if (flag == ACCEPT) {
             RequestModel requestModel = modelRepository.getRequestModelAt(list_position);
             FriendModel friendModel = new FriendModel(requestModel.getSenderName());
@@ -99,7 +99,7 @@ public class RequestFriendViewModel extends AndroidViewModel {
 
         decisionEvent.setValue(true);
         flag = 0;
-    }
+    }*/
 
     public void duplicateDenyButtonClicked() {
         decisionEvent.setValue(false);

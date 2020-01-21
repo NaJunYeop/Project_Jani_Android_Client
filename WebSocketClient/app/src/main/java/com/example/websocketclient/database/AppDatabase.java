@@ -13,9 +13,9 @@ import com.example.websocketclient.database.entity.MessageModel;
 import com.example.websocketclient.database.entity.ParticipantModel;
 import com.example.websocketclient.database.entity.RegisterModel;
 import com.example.websocketclient.database.entity.RequestModel;
-import com.example.websocketclient.database.entity.UserInformation;
+import com.example.websocketclient.database.entity.UserInformationModel;
 
-@Database(entities = {UserInformation.class, RequestModel.class, RegisterModel.class, ParticipantModel.class, MessageModel.class, ChatRoomModel.class}, version = 1, exportSchema = false)
+@Database(entities = {UserInformationModel.class, RequestModel.class, RegisterModel.class, ParticipantModel.class, MessageModel.class, ChatRoomModel.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase instance;
 

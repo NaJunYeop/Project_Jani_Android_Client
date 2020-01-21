@@ -9,15 +9,11 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.websocketclient.database.AppDatabase;
-import com.example.websocketclient.database.entity.UserInformation;
 import com.example.websocketclient.models.ModelRepository;
 import com.example.websocketclient.database.entity.RegisterModel;
-import com.example.websocketclient.retrofit.utils.RetrofitCommunicationService;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.MaybeObserver;
-import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -89,15 +85,15 @@ public class RegisterViewModel extends AndroidViewModel {
     }
 
     public void storeUserRegisterModelToClient(RegisterModel registerModel) {
-        modelRepository.insertServerDBRegisterModel(registerModel)
-                .subscribe(new SingleObserver<String>() {
+        modelRepository.insertClientDBRegisterModel(registerModel)
+                .subscribe(new CompletableObserver() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         compositeDisposable.add(d);
                     }
 
                     @Override
-                    public void onSuccess(String s) {
+                    public void onComplete() {
                         modelRepository.setUserRegisterModel(registerModel);
                         clientDBEvent.setValue("SUCCESS");
 
@@ -115,7 +111,7 @@ public class RegisterViewModel extends AndroidViewModel {
     public void storeUserRegisterModelToServer() {
         RegisterModel registerModel = new RegisterModel(userNameEdit.get(), userPasswordEdit.get());
 
-        modelRepository.insertClientDBRegisterModel(registerModel)
+        modelRepository.insertServerDBRegisterModel(registerModel)
                 .subscribe(new CompletableObserver() {
                     @Override
                     public void onSubscribe(Disposable d) {

@@ -30,7 +30,7 @@ public class ChatRoomListViewModel extends AndroidViewModel {
         modelRepository = ModelRepository.getInstance();
         modelRepository.setReferences(context);
 
-        subscribeToQueueChannel();
+        //subscribeToQueueChannel();
     }
 
     public ModelRepository getModelRepository() {
@@ -42,13 +42,13 @@ public class ChatRoomListViewModel extends AndroidViewModel {
     }
 
 
-    public void subscribeToQueueChannel() {
+    /*public void subscribeToQueueChannel() {
         compositeDisposable.add(modelRepository.stompGetTopicMessage("/queue/" + modelRepository.getCurUserInformation().getUserName())
                 .subscribe(topicMessage -> {
                     Log.d("CHECK", "ChatRoomListViewModel");
                     messageEvent.setValue(0);
                 }));
-    }
+    }*/
 
     public void chatListItemClicked(int position) {
         modelRepository.setSelectedChatRoomModel(modelRepository.getChatRoomList().get(position));

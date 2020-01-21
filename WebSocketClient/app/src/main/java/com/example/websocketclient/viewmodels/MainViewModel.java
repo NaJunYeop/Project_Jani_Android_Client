@@ -44,8 +44,8 @@ public class MainViewModel extends AndroidViewModel implements Serializable {
         modelRepository.setReferences(context);
         modelRepository.setMainViewModel(this);
 
-        createRequestChannel();
-        createQueueChannel();
+       /* createRequestChannel();
+        createQueueChannel();*/
         //createTopicChannel();
         stompConnect();
     }
@@ -79,7 +79,7 @@ public class MainViewModel extends AndroidViewModel implements Serializable {
         modelRepository.stompConnectStart();
     }
 
-    public void createRequestChannel() {
+    /*public void createRequestChannel() {
         compositeDisposable.add(modelRepository.stompGetTopicMessage("/req/" + modelRepository.getCurUserInformation().getUserName())
                 .subscribe(topicMessage -> {
                     // Json Parsing Needed.
@@ -103,7 +103,7 @@ public class MainViewModel extends AndroidViewModel implements Serializable {
                     modelRepository.addChatRoomModelByMessageModel(receivedMessage);
                 })
         );
-    }
+    }*/
 
     private void resetSubscriptions() {
         if (compositeDisposable != null) {

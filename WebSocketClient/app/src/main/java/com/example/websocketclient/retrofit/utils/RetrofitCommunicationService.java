@@ -8,6 +8,7 @@ import com.example.websocketclient.database.entity.RegisterModel;
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -15,11 +16,11 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface RetrofitCommunicationService {
-    @POST("/duplication_check")
+    @POST("/duplication-check")
     Single<String> userNameDuplicationCheck(@Body String userName);
 
     @POST("/user-registration")
-    Single<RegisterModel> registerUserRegisterModelToServer(@Body RegisterModel registerModel);
+    Completable registerUserRegisterModelToServer(@Body RegisterModel registerModel);
 
     @POST("/find-user")
     Maybe<RegisterModel> findUserInformation(@Body RegisterModel registerModel);

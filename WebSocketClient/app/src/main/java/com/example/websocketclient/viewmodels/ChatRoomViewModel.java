@@ -40,16 +40,16 @@ public class ChatRoomViewModel extends AndroidViewModel {
         modelRepository = ModelRepository.getInstance();
         modelRepository.setReferences(context);
 
-        subscribeToQueueChannel();
+        //subscribeToQueueChannel();
     }
 
-    public void subscribeToQueueChannel() {
+    /*public void subscribeToQueueChannel() {
         compositeDisposable.add(modelRepository.stompGetTopicMessage("/queue/" + modelRepository.getCurUserInformation().getUserName())
                 .subscribe(topicMessage -> {
                     Log.d("CHECK", "ChatRoomViewModel");
                     messageEvent.setValue(0);
                 }));
-    }
+    }*/
 
     public LiveData<Integer> getMessageEvent() {
         return this.messageEvent = new MutableLiveData<>();
@@ -59,7 +59,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
         return this.modelRepository;
     }
 
-    public void sendButtonClicked() {
+    /*public void sendButtonClicked() {
         MessageModel sMessageModel = new MessageModel();
 
         ChatRoomModel selectedChatRoomModel = modelRepository.getSelectedChatRoomModel();
@@ -78,7 +78,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
                 }, throwable -> {
                     Log.e(TAG, "Error send STOMP echo", throwable);
                 }));
-    }
+    }*/
 
     public String getDateFormatString() {
         Date date = new Date(System.currentTimeMillis());

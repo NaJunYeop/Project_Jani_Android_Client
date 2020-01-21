@@ -47,7 +47,7 @@ public class UserProfileViewModel extends AndroidViewModel {
     }
 
     public void startEndToEndChattingButtonClicked() {
-        modelRepository.addChatRoomModelByName(targetUser.getFriendName());
+        //modelRepository.addChatRoomModelByName(targetUser.getFriendName());
 
         Log.d("TesTest", "First 1:1 ButtonClicked" + modelRepository.getChatRoomList().size());
 

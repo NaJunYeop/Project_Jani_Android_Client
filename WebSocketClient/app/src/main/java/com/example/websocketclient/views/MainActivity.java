@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         activityMainBinding.setMainViewModel(mainViewModel);
 
-        mainViewModel.getModelRepository().setInitialRequestModelHashMap();
+        //mainViewModel.getModelRepository().setInitialRequestModelHashMap();
 
         pageAdapter = new PageAdapter(getSupportFragmentManager(), activityMainBinding.mainTabLayout.getTabCount());
         pageAdapter.setMainViewModel(mainViewModel);

@@ -10,7 +10,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.websocketclient.database.entity.UserInformation;
+import com.example.websocketclient.database.entity.UserInformationModel;
 import com.example.websocketclient.models.FriendModel;
 import com.example.websocketclient.models.ModelRepository;
 import com.example.websocketclient.database.entity.RequestModel;
@@ -29,7 +29,7 @@ public class AddFriendViewModel extends AndroidViewModel {
 
     private Context context;
     private ModelRepository modelRepository;
-    private UserInformation userInformation;
+    private UserInformationModel userInformationModel;
     private RegisterModel registerModel;
     private RequestModel requestModel;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -62,7 +62,7 @@ public class AddFriendViewModel extends AndroidViewModel {
         return modelRepository;
     }
 
-    public void findUserButtonClicked() {
+    /*public void findUserButtonClicked() {
         if (registerModel == null) registerModel = new RegisterModel.Builder(userNameEdit.get()).build();
         else registerModel.setUserName(userNameEdit.get());
 
@@ -146,7 +146,7 @@ public class AddFriendViewModel extends AndroidViewModel {
 
         commandEvent.setValue(1);
         userNameEdit.set("");
-    }
+    }*/
 
     public void noButtonClicked() {
         commandEvent.setValue(1);

@@ -15,8 +15,8 @@
         android:orientation="horizontal"
         android:layout_marginBottom="15sp"
         android:clickable="true"
-        android:focusable="true"
-        android:onClick="@{() -> chatRoomListViewModel.chatListItemClicked(position)}">
+        android:focusable="true">
+        <!-- android:onClick="@{() -> chatRoomListViewModel.chatListItemClicked(position)}" -->
 
         <LinearLayout
             android:layout_width="0sp"
@@ -29,10 +29,10 @@
                 android:layout_height="0dp"
                 android:layout_weight="1.5"
                 android:textStyle="bold"
-                android:text="@{chatRoomListViewModel.modelRepository.getChatRoomModelAt(position).chatRoomName}"
                 android:paddingLeft="15sp"
                 android:textSize="20sp"
                 android:gravity="center_vertical">
+                <!-- android:text="@{chatRoomListViewModel.modelRepository.getChatRoomModelAt(position).chatRoomName}" -->
             </TextView>
             <TextView
                 android:layout_width="match_parent"
@@ -40,18 +40,18 @@
                 android:layout_weight="1"
                 android:textSize="18sp"
                 android:gravity="center_vertical"
-                android:paddingLeft="15sp"
-                android:text="@{chatRoomListViewModel.modelRepository.getChatRoomModelAt(position).messageModelLast.contents}">
+                android:paddingLeft="15sp">
+                <!-- android:text="@{chatRoomListViewModel.modelRepository.getChatRoomModelAt(position).messageModelLast.contents}" -->
             </TextView>
         </LinearLayout>
         <TextView
             android:layout_width="0sp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:text="@{chatRoomListViewModel.modelRepository.getChatRoomModelAt(position).messageModelLast.senderSideDate}"
             android:textSize="15sp"
             android:paddingTop="20sp"
             android:gravity="center_horizontal">
+            <!-- android:text="@{chatRoomListViewModel.modelRepository.getChatRoomModelAt(position).messageModelLast.senderSideDate}" -->
         </TextView>
     </LinearLayout>
 </layout>

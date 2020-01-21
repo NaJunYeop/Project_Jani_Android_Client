@@ -2,7 +2,6 @@ package com.example.websocketclient.views;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ObservableField;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -12,14 +11,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.websocketclient.database.AppDatabase;
-import com.example.websocketclient.database.entity.UserInformation;
 import com.example.websocketclient.databinding.ActivityRegisterBinding;
 import com.example.websocketclient.R;
 import com.example.websocketclient.viewmodels.RegisterViewModel;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -39,7 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Test 하면서 SQLite User Information 삭제 할 일 있으면 밑의 주석을 없애고 실행하시오.
-        db = AppDatabase.getInstance(this);
+        /*db = AppDatabase.getInstance(this);
         completable = db.userDao().deleteAll();
         completable
                 .subscribeOn(Schedulers.io())
@@ -59,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onError(Throwable e) {
 
                     }
-                });
+                });*/
 
         // SQLite DB를 조회하여 사용자가 존재하는지에 대한 Event를 ViewModel로 부터 받는다.
         registerViewModel.getClientDBEvent()
@@ -101,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void showRegisterView() {
 
         // SpringBoot Tomcat WAS(이하 Server)와 통신하여 사용자가 입력한 User Name이 사용가능한지 검사한다.
-        // EXT : Server와 연결된 MySQL에 이미 존재하는 User Name
+        // DUP : Server와 연결된 MySQL에 이미 존재하는 User Name
         registerViewModel.getRetrofitEvent()
                 .observe(this, new Observer<String>() {
                     @Override

@@ -25,15 +25,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="확인"
-                android:onClick="@{() -> requestFriendViewModel.duplicateAcceptButtonClicked()}">
+                android:text="확인" >
+                <!--android:onClick="@{() -> requestFriendViewModel.duplicateAcceptButtonClicked()}"-->
             </Button>
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="취소"
-                android:onClick="@{() -> requestFriendViewModel.duplicateDenyButtonClicked()}">
+                android:text="취소" >
+                <!--android:onClick="@{() -> requestFriendViewModel.duplicateDenyButtonClicked()}"-->
             </Button>
         </LinearLayout>
 

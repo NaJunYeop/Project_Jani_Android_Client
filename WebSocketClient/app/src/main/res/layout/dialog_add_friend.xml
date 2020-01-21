@@ -29,15 +29,15 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="확인"
-                android:onClick="@{() -> addFriendViewModel.okButtonClicked()}">
+                android:text="확인" >
+                <!--android:onClick="@{() -> addFriendViewModel.okButtonClicked()}"-->
             </Button>
             <Button
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="취소"
-                android:onClick="@{() -> addFriendViewModel.noButtonClicked()}">
+                android:text="취소" >
+                <!--android:onClick="@{() -> addFriendViewModel.noButtonClicked()}"-->
             </Button>
         </LinearLayout>
 

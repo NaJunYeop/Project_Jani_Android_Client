@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 import java.io.Serializable;
 
 @Entity(tableName = "user_information")
-public class UserInformation {
+public class UserInformationModel {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "user_info_id")
     private int userInfoId;
@@ -18,7 +18,7 @@ public class UserInformation {
     @ColumnInfo(name = "user_info_user_name")
     private String userInfoUserName;
 
-    public UserInformation(String userInfoOwner, String userInfoUserName) {
+    public UserInformationModel(String userInfoOwner, String userInfoUserName) {
         this.userInfoOwner = userInfoOwner;
         this.userInfoUserName = userInfoUserName;
     }

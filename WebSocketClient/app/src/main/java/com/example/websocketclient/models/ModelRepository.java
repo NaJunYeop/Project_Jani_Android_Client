@@ -8,7 +8,7 @@ import com.example.websocketclient.database.entity.ChatRoomModel;
 import com.example.websocketclient.database.entity.MessageModel;
 import com.example.websocketclient.database.entity.RegisterModel;
 import com.example.websocketclient.database.entity.RequestModel;
-import com.example.websocketclient.database.entity.UserInformation;
+import com.example.websocketclient.database.entity.UserInformationModel;
 import com.example.websocketclient.retrofit.utils.RetrofitClient;
 import com.example.websocketclient.retrofit.utils.RetrofitCommunicationService;
 import com.example.websocketclient.viewmodels.MainViewModel;
@@ -90,14 +90,14 @@ public class ModelRepository {
         return this.userRegisterModel;
     }
 
-    public Observable<Boolean> setInitialModels() {
+    /*public Observable<Boolean> setInitialModels() {
 
         setInitialRequestModelHashMap();
         setInitialFriendModelHashMap();
         //setInitialChatRoomModelHashMap();
 
         return Observable.just(true);
-    }
+    }*/
 
     public void setReferences(Context context) {
         this.context = context;
@@ -131,7 +131,7 @@ public class ModelRepository {
 
     // ================================== RequestModel =============================================
 
-    public void setInitialRequestModelHashMap() {
+    /*public void setInitialRequestModelHashMap() {
         retrofitCommunicationService.getRequstModelList(userInformation.getUserName())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -158,7 +158,7 @@ public class ModelRepository {
 
                     }
                 });
-    }
+    }*/
 
     public HashMap<String, RequestModel> getRequestModelHashMap() {
         return this.requestModelHashMap;
@@ -172,7 +172,7 @@ public class ModelRepository {
         return requestModels.get(position);
     }
 
-    public void addRequestModel(RequestModel requestModel) {
+    /*public void addRequestModel(RequestModel requestModel) {
         if (requestModelHashMap.containsKey(requestModel.getSenderName()) == false) {
             requestModelHashMap.put(requestModel.getSenderName(), requestModel);
             requestModels.add(requestModelHashMap.get(requestModel.getSenderName()));
@@ -213,7 +213,7 @@ public class ModelRepository {
 
                     }
                 });
-    }
+    }*/
     public HashMap<String, FriendModel> getFriendModelHashMap() {
         return friendModelHashMap;
     }
@@ -236,7 +236,7 @@ public class ModelRepository {
 
     // ================================== ChatRoomModel ============================================
 
-    public Observable<List<ChatRoomModel>> setInitialChatRoomModelHashMap() {
+    /*public Observable<List<ChatRoomModel>> setInitialChatRoomModelHashMap() {
         return retrofitCommunicationService.getChatRoomModelList(userInformation.getUserName())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -251,7 +251,7 @@ public class ModelRepository {
                         .observeOn(AndroidSchedulers.mainThread());
             }
         }
-    }
+    }*/
 
     public HashMap<String, ChatRoomModel> getChatRoomModelHashMap() {
         return this.chatRoomModelHashMap;
@@ -265,7 +265,7 @@ public class ModelRepository {
         return chatRoomModels.get(position);
     }
 
-    public void addChatRoomModelByName(String targetUser) {
+    /*public void addChatRoomModelByName(String targetUser) {
 
         String chatChannel = "/queue/" + targetUser;
 
@@ -304,7 +304,7 @@ public class ModelRepository {
 
             Log.d("TestTest", "HashMapSize : " + chatRoomModelHashMap.size() + ", ListSize : " + chatRoomModels.size());
         }
-    }
+    }*/
 
     // ================================== MessageModel ==============================================
 
@@ -321,14 +321,14 @@ public class ModelRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Single<String> insertServerDBRegisterModel(RegisterModel userRegisterModel) {
-        return retrofitCommunicationService.registerUserRegisterModelToServer()
+    public Completable insertServerDBRegisterModel(RegisterModel userRegisterModel) {
+        return retrofitCommunicationService.registerUserRegisterModelToServer(userRegisterModel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Completable dbInsertUserInformation(UserInformation userInformation) {
-        return db.userDao().insertUserName(userInformation)
+    public Completable dbInsertUserInformation(UserInformationModel userInformationModel) {
+        return db.userDao().insertUserName(userInformationModel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
