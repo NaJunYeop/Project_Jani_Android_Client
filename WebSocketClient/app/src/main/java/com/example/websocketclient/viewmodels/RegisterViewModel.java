@@ -30,6 +30,7 @@ public class RegisterViewModel extends AndroidViewModel {
     private MutableLiveData<String> clientDBEvent;
     private MutableLiveData<String> serverDBEvent;
     private MutableLiveData<String> retrofitEvent;
+    private MutableLiveData<String> loadEvent;
 
     // data-binding을 위해 ObservableField 객체 생성.
     public ObservableField<String> userNameEdit = new ObservableField<>();
@@ -57,6 +58,35 @@ public class RegisterViewModel extends AndroidViewModel {
         return serverDBEvent = new MutableLiveData<>();
     }
 
+    public LiveData<String> getLoadEvent() {
+        return loadEvent = new MutableLiveData<>();
+    }
+
+    public void prefetchingDataFromClientDB() {
+        modelRepository.loadData()
+                .subscribe(new MaybeObserver<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onSuccess(String result) {
+                        loadEvent.setValue(result);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        loadEvent.setValue("LOAD_ERROR");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        loadEvent.setValue("LOAD_EMPTY");
+                    }
+                });
+    }
+
     public void checkRegisterModelExist() {
         modelRepository.getClientDBRegisterModel()
                 .subscribe(new MaybeObserver<RegisterModel>() {
@@ -70,6 +100,7 @@ public class RegisterViewModel extends AndroidViewModel {
                     public void onSuccess(RegisterModel registerModel) {
                         modelRepository.setUserRegisterModel(registerModel);
                         clientDBEvent.setValue("EXIST");
+                        prefetchingDataFromClientDB();
                     }
 
                     @Override
@@ -99,6 +130,8 @@ public class RegisterViewModel extends AndroidViewModel {
 
                         userNameEdit.set("");
                         userPasswordEdit.set("");
+
+                        prefetchingDataFromClientDB();
                     }
 
                     @Override

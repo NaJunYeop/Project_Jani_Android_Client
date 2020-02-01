@@ -12,14 +12,14 @@ import com.example.websocketclient.R;
 import com.example.websocketclient.databinding.ActivityRequestFriendBinding;
 import com.example.websocketclient.viewmodels.RequestFriendViewModel;
 import com.example.websocketclient.views.utils.adapters.RequestFriendAdapter;
-import com.example.websocketclient.views.utils.dialogs.SimpleDialog;
+import com.example.websocketclient.views.utils.dialogs.RequestFriendDialog;
 
 public class RequestFriendActivity extends AppCompatActivity {
 
     private ActivityRequestFriendBinding activityRequestFriendBinding;
     private RequestFriendViewModel requestFriendViewModel;
     private RequestFriendAdapter requestFriendAdapter;
-    private SimpleDialog simpleDialog;
+    private RequestFriendDialog requestFriendDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +43,17 @@ public class RequestFriendActivity extends AppCompatActivity {
     }
 
     public void getLiveDataEvent() {
+
+        requestFriendViewModel.getButtonClickEvent()
+                .observe(this, new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean check) {
+                        if (check) {
+                            showTwoButtonDialog();
+                        }
+                    }
+                });
+
         requestFriendViewModel.getDecisionEvent()
                 .observe(this, new Observer<Boolean>() {
                     @Override
@@ -50,18 +61,8 @@ public class RequestFriendActivity extends AppCompatActivity {
                         if (check) {
                             requestFriendAdapter.notifyDataSetChanged();
                         }
-                        if (simpleDialog != null) {
-                            simpleDialog.dismiss();
-                        }
-                    }
-                });
-
-        requestFriendViewModel.getButtonClickEvent()
-                .observe(this, new Observer<Boolean>() {
-                    @Override
-                    public void onChanged(Boolean check) {
-                        if (check) {
-                            showSimpleDialog();
+                        if (requestFriendDialog != null) {
+                            requestFriendDialog.dismiss();
                         }
                     }
                 });
@@ -80,8 +81,8 @@ public class RequestFriendActivity extends AppCompatActivity {
                 });
     }
 
-    public void showSimpleDialog() {
-        if (simpleDialog == null) simpleDialog = new SimpleDialog(requestFriendViewModel);
-        simpleDialog.show(getSupportFragmentManager(), "SimpleDialog");
+    public void showTwoButtonDialog() {
+        if (requestFriendDialog == null) requestFriendDialog = new RequestFriendDialog(requestFriendViewModel);
+        requestFriendDialog.show(getSupportFragmentManager(), "RequestFriendDialog");
     }
 }

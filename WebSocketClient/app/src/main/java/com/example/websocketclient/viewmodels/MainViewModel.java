@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.websocketclient.database.entity.UserInformationModel;
 import com.example.websocketclient.models.FriendModel;
 import com.example.websocketclient.database.entity.MessageModel;
 import com.example.websocketclient.models.ModelRepository;
@@ -17,7 +18,11 @@ import com.google.gson.Gson;
 
 import java.io.Serializable;
 
+import io.reactivex.CompletableObserver;
+import io.reactivex.MaybeObserver;
+import io.reactivex.SingleObserver;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import ua.naiksoftware.stomp.dto.LifecycleEvent;
 
 public class MainViewModel extends AndroidViewModel implements Serializable {
@@ -44,8 +49,8 @@ public class MainViewModel extends AndroidViewModel implements Serializable {
         modelRepository.setReferences(context);
         modelRepository.setMainViewModel(this);
 
-       /* createRequestChannel();
-        createQueueChannel();*/
+        createRequestChannel();
+        createQueueChannel();
         //createTopicChannel();
         stompConnect();
     }
@@ -77,6 +82,103 @@ public class MainViewModel extends AndroidViewModel implements Serializable {
                 })
         );
         modelRepository.stompConnectStart();
+    }
+
+    public void createRequestChannel() {
+        compositeDisposable.add(modelRepository.stompGetTopicMessage("/req/" + modelRepository.getUserRegisterModel().getRegUserName())
+                .subscribe(topicMessage -> {
+                    RequestModel requestModel = gson.fromJson(topicMessage.getPayload(), RequestModel.class);
+
+                    // REQ
+                    if (requestModel.getReqType() == 1) {
+                        // Add to Database
+                        insertClientDBRequestModel(requestModel);
+                        // Add to ArrayList
+                        modelRepository.addRequestModel(requestModel);
+                    }
+                    // ACK
+                    else if (requestModel.getReqType() == 2) {
+                        // 해당 친구(사용자) 이름을 MySQL에서 조회한 후 UserInformation을 받아
+                        // Database(SQLite)와 ArrayList에 저장한다.
+                        addFriendUserInformation(requestModel.getReqReceiverName());
+                    }
+                    // TopicChannel
+                    else if (requestModel.getReqType() == 3) {
+
+                    }
+                })
+        );
+    }
+
+    public void createQueueChannel() {
+        compositeDisposable.add(modelRepository.stompGetTopicMessage("/queue/" + modelRepository.getUserRegisterModel().getRegUserName())
+                .subscribe(topicMessage -> {
+
+                })
+        );
+    }
+
+    public void insertClientDBRequestModel(RequestModel requestModel) {
+        modelRepository.insertClientDBRequestModel(requestModel)
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+    }
+
+    public void addFriendUserInformation(String friendUserName) {
+        modelRepository.retrofitGetUserInformationModel(friendUserName)
+                .subscribe(new SingleObserver<UserInformationModel>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onSuccess(UserInformationModel userInformationModel) {
+                        // Add To Database
+                        insertClientDBUserInformationModel(userInformationModel);
+                        // Add To ArrayList
+                        modelRepository.addUserInformationModel(userInformationModel);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+    }
+
+    public void insertClientDBUserInformationModel(UserInformationModel userInformationModel) {
+        modelRepository.insertClientDBUserInformationModel(userInformationModel)
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        // Insert To SQLite Successfully
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
     }
 
     /*public void createRequestChannel() {

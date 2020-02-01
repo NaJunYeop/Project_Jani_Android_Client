@@ -1,5 +1,6 @@
 package com.example.websocketclient.models;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.util.Log;
 
@@ -21,12 +22,15 @@ import io.reactivex.Completable;
 import io.reactivex.CompletableTransformer;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.MaybeObserver;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.schedulers.Schedulers;
+import kotlin.jvm.functions.Function1;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 import ua.naiksoftware.stomp.dto.LifecycleEvent;
@@ -50,13 +54,18 @@ public class ModelRepository {
 
     private ArrayList<ChatRoomModel> chatRoomModels;
     private ArrayList<FriendModel> friendModels;
-    private ArrayList<RequestModel> requestModels;
+    //private ArrayList<RequestModel> requestModels;
+
+    private List<UserInformationModel> userInformationModels = new ArrayList<>();
+    private List<RequestModel> requestModels = new ArrayList<>();
 
     //private Observable<Boolean> doneInitiation;
     private Observable<Integer> doneInitiation;
 
     private FriendModel selectedFriendModel;
     private ChatRoomModel selectedChatRoomModel;
+
+    private UserInformationModel selectedUserInformationModel;
 
     private MainViewModel mainViewModel;
 
@@ -90,15 +99,6 @@ public class ModelRepository {
         return this.userRegisterModel;
     }
 
-    /*public Observable<Boolean> setInitialModels() {
-
-        setInitialRequestModelHashMap();
-        setInitialFriendModelHashMap();
-        //setInitialChatRoomModelHashMap();
-
-        return Observable.just(true);
-    }*/
-
     public void setReferences(Context context) {
         this.context = context;
         db = AppDatabase.getInstance(this.context);
@@ -117,6 +117,14 @@ public class ModelRepository {
         this.selectedFriendModel = selectedFriendModel;
     }
 
+    public UserInformationModel getSelectedUserInformationModel() {
+        return this.selectedUserInformationModel;
+    }
+
+    public void setSelectedUserInformationModel(UserInformationModel selectedUserInformationModel) {
+        this.selectedUserInformationModel = selectedUserInformationModel;
+    }
+
     public FriendModel getSelectedFriendModel() {
         return this.selectedFriendModel;
     }
@@ -131,45 +139,96 @@ public class ModelRepository {
 
     // ================================== RequestModel =============================================
 
-    /*public void setInitialRequestModelHashMap() {
-        retrofitCommunicationService.getRequstModelList(userInformation.getUserName())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<RequestModel>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(List<RequestModel> requestModels) {
-                        for (RequestModel rm : requestModels) {
-                            Log.i("newTest", rm.getSenderName());
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }*/
-
-    public HashMap<String, RequestModel> getRequestModelHashMap() {
-        return this.requestModelHashMap;
-    }
-
-    public ArrayList<RequestModel> getRequestModelList() {
-        return this.requestModels;
+    public Maybe<List<RequestModel>> loadRequestModels() {
+        return db.requestModelDao().getRequestModels()
+                .subscribeOn(Schedulers.io());
     }
 
     public RequestModel getRequestModelAt(int position) {
         return requestModels.get(position);
+    }
+
+    public void addRequestModel(RequestModel requestModel) {
+        this.requestModels.add(requestModel);
+    }
+
+    public void deleteRequestModel(String senderName) {
+        for (int i = 0; i < this.requestModels.size(); i++) {
+            if (this.requestModels.get(i).getReqSenderName().equals(senderName)) {
+                requestModels.remove(i);
+                return;
+            }
+        }
+    }
+
+    public void deleteRequestModel(int position) {
+        requestModels.remove(position);
+    }
+
+    public Completable deleteRequestModelFromClientDB(String senderName) {
+        return db.requestModelDao().deleteRequestModel(senderName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public List<RequestModel> getRequestModels() {
+        return requestModels;
+    }
+
+    public void setRequestModels(List<RequestModel> requestModels) {
+        if (requestModels == null) {
+            this.requestModels = new ArrayList<>();
+        }
+        else {
+            this.requestModels = requestModels;
+        }
+    }
+
+    public List<UserInformationModel> getUserInformationModels() {
+        return userInformationModels;
+    }
+
+    public void setUserInformationModels(List<UserInformationModel> userInformationModels) {
+        if (userInformationModels == null) {
+            this.userInformationModels = new ArrayList<>();
+        }
+        else {
+            this.userInformationModels = userInformationModels;
+        }
+    }
+
+    public UserInformationModel getUserInformationModelAt(int position) {
+        return userInformationModels.get(position);
+    }
+
+    public void addUserInformationModel(UserInformationModel userInformationModel) {
+        this.userInformationModels.add(userInformationModel);
+    }
+
+    public void deleteUserInformationModel(String userName) {
+        for (int i = 0; i < this.userInformationModels.size(); i++) {
+            if (this.userInformationModels.get(i).getUserInfoUserName().equals(userName)) {
+                this.userInformationModels.remove(i);
+                return;
+            }
+        }
+    }
+
+    public Maybe<List<UserInformationModel>> loadUserInformationModels() {
+        return db.userDao().getUserInformationModels()
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Maybe<String> loadData() {
+        return Maybe.zip(loadUserInformationModels(), loadRequestModels(), new BiFunction<List<UserInformationModel>, List<RequestModel>, String>() {
+            @Override
+            public String apply(List<UserInformationModel> userInformationModels, List<RequestModel> requestModels) throws Exception {
+                setUserInformationModels(userInformationModels);
+                setRequestModels(requestModels);
+
+                return "FIN_LOAD";
+            }
+        }).observeOn(AndroidSchedulers.mainThread());
     }
 
     /*public void addRequestModel(RequestModel requestModel) {
@@ -310,7 +369,7 @@ public class ModelRepository {
 
     // ============================= Room Databse ==================================================
     public Maybe<RegisterModel> getClientDBRegisterModel() {
-        return db.registerModelDao().getUserRegisterModel()
+        return db.registerModelDao().getUserRegisterModels()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -327,11 +386,23 @@ public class ModelRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Completable dbInsertUserInformation(UserInformationModel userInformationModel) {
-        return db.userDao().insertUserName(userInformationModel)
+    public Completable insertClientDBUserInformationModel(UserInformationModel userInformationModel) {
+        return db.userDao().insertUserInformationModel(userInformationModel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    public Completable insertClientDBRequestModel(RequestModel requestModel) {
+        return db.requestModelDao().insertRequestModel(requestModel)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /*public Completable dbInsertUserInformation(UserInformationModel userInformationModel) {
+        return db.userDao().insertUserName(userInformationModel)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }*/
 
     // =============================== Retrofit ====================================================
     public Single<String> retrofitCheckDuplicateUserName(String userName) {
@@ -340,11 +411,23 @@ public class ModelRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Maybe<RegisterModel> retrofitFindUserInformation(RegisterModel registerModel) {
-        return retrofitCommunicationService.findUserInformation(registerModel)
+    public Maybe<String> retrofitFindUserInformationModel(String userName) {
+        return retrofitCommunicationService.findUserInformationModel(userName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    public Single<UserInformationModel> retrofitGetUserInformationModel(String userName) {
+        return retrofitCommunicationService.getUserInformationModel(userName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /*public Maybe<RegisterModel> retrofitFindUserInformation(RegisterModel registerModel) {
+        return retrofitCommunicationService.findUserInformation(registerModel)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }*/
 
     // ========================= STOMP over Websocket ==============================================
 

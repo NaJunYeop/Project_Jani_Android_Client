@@ -38,7 +38,7 @@ public class RequestFriendAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemCount() {
-        return requestFriendViewModel.getModelRepository().getRequestModelList().size();
+        return requestFriendViewModel.getModelRepository().getRequestModels().size();
     }
 
     public class RequestFriendViewHolder extends RecyclerView.ViewHolder {

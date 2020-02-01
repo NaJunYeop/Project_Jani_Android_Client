@@ -10,9 +10,9 @@ import io.reactivex.Completable;
 import io.reactivex.Maybe;
 
 @Dao
-public interface RegisterModelDao {
+public interface  RegisterModelDao {
     @Query("SELECT * FROM register_model")
-    Maybe<RegisterModel> getUserRegisterModel();
+    Maybe<RegisterModel> getUserRegisterModels();
 
     @Insert
     Completable insertRegisterModel(RegisterModel registerModel);

@@ -7,8 +7,13 @@ import androidx.room.Query;
 
 import com.example.websocketclient.database.entity.UserInformationModel;
 
+import java.util.List;
+
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 @Dao
 public interface UserDao {
@@ -24,8 +29,11 @@ public interface UserDao {
    /* @Query("DELETE FROM UserInformationModel")
     Completable deleteAll();*/
 
+    @Query("SELECT * FROM user_information")
+    Maybe<List<UserInformationModel>> getUserInformationModels();
+
     @Insert
-    Completable insertUserName(UserInformationModel userInformationModel);
+    Completable insertUserInformationModel(UserInformationModel userInformationModel);
 
     @Delete
     void delete(UserInformationModel userInformationModel);

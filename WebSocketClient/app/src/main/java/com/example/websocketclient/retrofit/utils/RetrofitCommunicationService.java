@@ -1,6 +1,7 @@
 package com.example.websocketclient.retrofit.utils;
 
 import com.example.websocketclient.database.entity.ChatRoomModel;
+import com.example.websocketclient.database.entity.UserInformationModel;
 import com.example.websocketclient.models.FriendModel;
 import com.example.websocketclient.database.entity.MessageModel;
 import com.example.websocketclient.database.entity.RequestModel;
@@ -23,7 +24,13 @@ public interface RetrofitCommunicationService {
     Completable registerUserRegisterModelToServer(@Body RegisterModel registerModel);
 
     @POST("/find-user")
-    Maybe<RegisterModel> findUserInformation(@Body RegisterModel registerModel);
+    Maybe<String> findUserInformationModel(@Body String userName);
+
+    @POST("/get-user-info")
+    Single<UserInformationModel> getUserInformationModel(@Body String userName);
+
+    /*@POST("/find-user")
+    Maybe<RegisterModel> findUserInformation(@Body RegisterModel registerModel);*/
 
     @POST("/get-request-model")
     Observable<List<RequestModel>> getRequstModelList(@Body String userName);

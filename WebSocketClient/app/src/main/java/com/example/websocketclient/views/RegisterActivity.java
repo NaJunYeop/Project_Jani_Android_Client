@@ -66,9 +66,20 @@ public class RegisterActivity extends AppCompatActivity {
                         if (result.equals("N_EXIST")) {
                             showRegisterView();
                         }
-                        else {
+                        /*else {
                             // ["EXIST" : 이미 가입된 사용자]
                             // ["SUCCESS" : 가입 성공 시]
+                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }*/
+                    }
+                });
+
+        registerViewModel.getLoadEvent()
+                .observe(this, new Observer<String>() {
+                    @Override
+                    public void onChanged(String result) {
+                        if (result.equals("FIN_LOAD")) {
                             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                             startActivity(intent);
                         }

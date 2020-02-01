@@ -22,23 +22,23 @@
             android:gravity="center_vertical"
             android:paddingLeft="20sp"
             android:textStyle="bold"
-            android:textSize="20sp">
-            <!-- android:text="@{requestFriendViewModel.getModelRepository().getRequestModelAt(position).senderName}" -->
+            android:textSize="20sp"
+            android:text="@{requestFriendViewModel.modelRepository.getRequestModelAt(position).reqSenderName}">
 
         </TextView>
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:text="승인">
-            <!-- android:onClick="@{() -> requestFriendViewModel.acceptButtonClicked(position)}" -->
+            android:text="추가"
+            android:onClick="@{() -> requestFriendViewModel.listAcceptButtonClicked(position)}">
         </Button>
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:text="거절">
-            <!-- android:onClick="@{() -> requestFriendViewModel.denyButtonClicked(position)}" -->
+            android:text="거절"
+            android:onClick="@{() -> requestFriendViewModel.listDenyButtonClicked(position)}">
         </Button>
     </LinearLayout>
 </layout>

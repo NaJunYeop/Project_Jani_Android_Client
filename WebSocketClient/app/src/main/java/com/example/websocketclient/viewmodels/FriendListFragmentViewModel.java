@@ -9,10 +9,16 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.websocketclient.database.entity.UserInformationModel;
 import com.example.websocketclient.models.ModelRepository;
 import com.google.gson.Gson;
 
+import java.util.List;
+
+import io.reactivex.MaybeObserver;
+import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 public class FriendListFragmentViewModel extends AndroidViewModel {
 
@@ -63,7 +69,7 @@ public class FriendListFragmentViewModel extends AndroidViewModel {
     }
 
     public void listItemClicked(int position) {
-        modelRepository.setSelectedFriendModel(modelRepository.getFriendModelAt(position));
+        modelRepository.setSelectedUserInformationModel(modelRepository.getUserInformationModelAt(position));
         profileEvent.setValue(true);
     }
 

@@ -44,7 +44,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return friendListFragmentViewModel.getModelRepository().getFriendModelList().size();
+        return friendListFragmentViewModel.getModelRepository().getUserInformationModels().size();
     }
 
     // ViewHolder Class
