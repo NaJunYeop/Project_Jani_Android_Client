@@ -51,11 +51,16 @@ public class AddFriendActivity extends AppCompatActivity {
                 });
 
         addFriendViewModel.getCommandEvent()
-                .observe(this, new Observer<Integer>() {
+                .observe(this, new Observer<String>() {
                     @Override
-                    public void onChanged(Integer command) {
-                        if (command == 2) {
+                    public void onChanged(String userName) {
+                        if (userName.equals("DONE")) {
                             Toast.makeText(AddFriendActivity.this, "요청을 완료했습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                        else if (userName.equals("DENY")) {
+                        }
+                        else {
+                            Toast.makeText(AddFriendActivity.this, userName + "님을 친구로 추가하였습니다.", Toast.LENGTH_SHORT).show();
                         }
                         addFriendDialog.dismiss();
                     }

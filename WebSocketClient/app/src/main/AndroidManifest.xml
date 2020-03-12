@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".views.UserProfileActivity"></activity>
+        <activity android:name=".views.AddChatRoomActivity"></activity>
+        <activity android:name=".views.UserProfileActivity" />
         <activity android:name=".views.RequestFriendActivity" />
         <activity android:name=".views.AddFriendActivity" />
         <activity android:name=".views.ChatRoomActivity" />

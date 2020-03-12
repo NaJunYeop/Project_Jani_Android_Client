@@ -55,36 +55,33 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     // onCreateViewHolder에서 생성된 ViewHolder를 가져와서 현재 Position에 맞는 Data를 ViewHolder안의 View들에게 Binding해준다.
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        /*if (userDivider(chatRoomViewModel.getModelRepository().getSelectedChatRoomModel().getMessageModels().get(position).getSenderName()) == SENDER) {
+        if (userDivider(chatRoomViewModel.getModelRepository().getSelectedChatModel().getMessageModelAt(position).getMsgSenderName()) == SENDER) {
             ((RightSpeechBubbleViewHolder)holder).setBinding(chatRoomViewModel, position);
         }
         else {
             ((LeftSpeechBubbleViewHolder)holder).setBinding(chatRoomViewModel, position);
-        }*/
+        }
 
     }
 
     // 현재 Position에 해당하는 ViewType을 판단한다.
     @Override
     public int getItemViewType(int position) {
-        return 1;
-        //return userDivider(chatRoomViewModel.getModelRepository().getSelectedChatRoomModel().getMessageModels().get(position).getSenderName());
+        return userDivider(chatRoomViewModel.getModelRepository().getSelectedChatModel().getMessageModelAt(position).getMsgSenderName());
     }
 
     // ItemCount 수만큼 getItemViewType(), onCreateViewHolder(), onBindViewHolder가 연속적으로 호출된다.
     @Override
     public int getItemCount() {
-        return 0;
-        //return chatRoomViewModel.getModelRepository().getSelectedChatRoomModel().getMessageModels().size();
+        return chatRoomViewModel.getModelRepository().getSelectedChatModel().getMessageModels().size();
     }
 
     public int userDivider(String userName) {
-       /* if (chatRoomViewModel.getModelRepository().getCurUserInformation().getUserName().equals(userName)) {
+       if (chatRoomViewModel.getModelRepository().getUserRegisterModel().getRegUserName().equals(userName)) {
             return SENDER;
         }
         else {
             return RECEIVER;
-        }*/
-       return SENDER;
+        }
     }
 }

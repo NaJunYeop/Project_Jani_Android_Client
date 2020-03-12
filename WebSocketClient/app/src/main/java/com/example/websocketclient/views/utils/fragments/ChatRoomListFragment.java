@@ -2,6 +2,7 @@ package com.example.websocketclient.views.utils.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.websocketclient.R;
 import com.example.websocketclient.databinding.FragmentChatRoomListBinding;
 import com.example.websocketclient.viewmodels.ChatRoomListViewModel;
+import com.example.websocketclient.views.AddChatRoomActivity;
 import com.example.websocketclient.views.ChatRoomActivity;
 import com.example.websocketclient.views.utils.adapters.ChatRoomListAdapter;
 
@@ -28,6 +30,8 @@ public class ChatRoomListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        Log.d("QueueChannelCheck", "onCreateView !!!");
         fragmentChatRoomListBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_room_list, container, false);
         fragmentChatRoomListBinding.setLifecycleOwner(getViewLifecycleOwner());
 
@@ -44,8 +48,12 @@ public class ChatRoomListFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
+        notifyAdapter();
+    }
+
+    public void notifyAdapter() {
         if (chatRoomListAdapter != null) {
             chatRoomListAdapter.notifyDataSetChanged();
         }
@@ -62,6 +70,13 @@ public class ChatRoomListFragment extends Fragment {
                         else if (flag == 1) {
                             Intent intent = new Intent(getActivity(), ChatRoomActivity.class);
                             startActivity(intent);
+                        }
+                        else if (flag == 2) {
+                            Intent intent = new Intent(getActivity(), AddChatRoomActivity.class);
+                            startActivity(intent);
+                        }
+                        else if (flag == 3) {
+                            notifyAdapter();
                         }
                     }
                 });

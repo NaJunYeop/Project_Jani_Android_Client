@@ -37,7 +37,7 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        return chatRoomListViewModel.getModelRepository().getChatRoomList().size();
+        return chatRoomListViewModel.getModelRepository().getChatModels().size();
     }
 
     public class ChatRoomListViewHolder extends RecyclerView.ViewHolder {

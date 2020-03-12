@@ -16,6 +16,7 @@ public class RequestModel {
     @ColumnInfo(name = "req_type")
     private int reqType;
 
+    @ColumnInfo(name = "chat_channel")
     private String chatChannel;
 
     @ColumnInfo(name = "req_sender_name")
@@ -44,6 +45,14 @@ public class RequestModel {
 
     public void setReqType(int reqType) {
         this.reqType = reqType;
+    }
+
+    public String getChatChannel() {
+        return chatChannel;
+    }
+
+    public void setChatChannel(String chatChannel) {
+        this.chatChannel = chatChannel;
     }
 
     public String getReqSenderName() {

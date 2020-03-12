@@ -58,6 +58,11 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });*/
 
+        // 이 Activity(RegisterActivity)를 띄워주기 전에 먼저 SQLite DB에서 사용자를 조회한 후
+        // 사용자가 존재한다면 바로 Main Activity로 전환
+        // 사용자가 존재하지 않는다면 계정을 등록하는 Register Acitivty를 띄워준다.
+        beforeShowRegisterView();
+
         // SQLite DB를 조회하여 사용자가 존재하는지에 대한 Event를 ViewModel로 부터 받는다.
         registerViewModel.getClientDBEvent()
                 .observe(this, new Observer<String>() {
@@ -85,11 +90,6 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-        // 이 Activity(RegisterActivity)를 띄워주기 전에 먼저 SQLite DB에서 사용자를 조회한 후
-        // 사용자가 존재한다면 바로 Main Activity로 전환
-        // 사용자가 존재하지 않는다면 계정을 등록하는 Register Acitivty를 띄워준다.
-        beforeShowRegisterView();
     }
 
     public void dataBindingInit() {
@@ -114,6 +114,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .observe(this, new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
+                        Toast.makeText(RegisterActivity.this, s, Toast.LENGTH_LONG).show();
                         if (s.equals("DUP")) {
                             Log.i(TAG, "From server : User name already exist");
                             Toast.makeText(RegisterActivity.this, "존재하는 이름입니다.\n다른 이름을 입력해 주세요.", Toast.LENGTH_SHORT).show();
@@ -121,6 +122,7 @@ public class RegisterActivity extends AppCompatActivity {
                         else if (s.equals("CHK")){
                             // 아이디를 사용할 것인지 Dialog로 물어봐야한다.
                             // 중복된 User Name이 아닌 경우 MySQL에 저장.
+                            Toast.makeText(RegisterActivity.this, "계정을 생성합니다.", Toast.LENGTH_LONG).show();
                             registerViewModel.storeUserRegisterModelToServer();
                         }
                     }

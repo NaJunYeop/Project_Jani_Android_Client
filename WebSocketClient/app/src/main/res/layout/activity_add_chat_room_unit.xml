@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="addChatRoomViewModel"
+            type="com.example.websocketclient.viewmodels.AddChatRoomViewModel" />
+        <variable
+            name="position"
+            type="Integer" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80sp"
+        android:paddingBottom="10sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="@{() -> addChatRoomViewModel.listItemClicked(position)}">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="25sp"
+                android:gravity="center_vertical"
+                android:paddingLeft="20sp"
+                android:text="@{addChatRoomViewModel.modelRepository.getUserInformationModelAt(position).userInfoUserName}">
+            </TextView>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:clickable="false"
+                android:checked="@={addChatRoomViewModel.getCheckBoxStateAt(position)}">
+            </CheckBox>
+        </FrameLayout>
+
+    </LinearLayout>
+</layout>

@@ -97,13 +97,33 @@ public class RequestFriendViewModel extends AndroidViewModel {
         }
 
         // RequestModel을 ACCEPT/DENY에 상관없이 삭제해야함.
+        deleteClientDBRequestModel(modelRepository.getRequestModelAt(list_position).getReqSenderName());
         modelRepository.deleteRequestModel(list_position);
-        modelRepository.deleteRequestModelFromClientDB(senderName);
         decisionEvent.setValue(true);
     }
 
     public void dialogDenyButtonClicked() {
         decisionEvent.setValue(false);
+    }
+
+    public void deleteClientDBRequestModel(String senderName) {
+        modelRepository.deleteRequestModelFromClientDB(senderName)
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
     }
 
     public void sendAckToSenderViaStomp(RequestModel requestModel) {
@@ -116,6 +136,8 @@ public class RequestFriendViewModel extends AndroidViewModel {
                     Log.e(TAG, "Error send STOMP echo", throwable);
                 }));
     }
+
+
 
     public void addFriendUserInformation(String friendUserName) {
         modelRepository.retrofitGetUserInformationModel(friendUserName)

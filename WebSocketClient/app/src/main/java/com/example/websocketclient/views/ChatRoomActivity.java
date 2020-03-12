@@ -49,6 +49,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     }
 
     public void getLiveDataEvent() {
+        activityChatRoomBinding.recyclerView.scrollToPosition(chatRoomAdapter.getItemCount() - 1);
         chatRoomViewModel.getMessageEvent()
                 .observe(this, new Observer<Integer>() {
                     @Override

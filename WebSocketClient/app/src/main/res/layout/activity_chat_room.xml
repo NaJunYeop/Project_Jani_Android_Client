@@ -49,8 +49,8 @@
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/chat_input_msg" >
-            <!--android:onClick="@{() -> chatRoomViewModel.sendButtonClicked()}"-->
+            app:layout_constraintLeft_toRightOf="@+id/chat_input_msg"
+            android:onClick="@{() -> chatRoomViewModel.sendButtonClicked()}">
         </Button>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

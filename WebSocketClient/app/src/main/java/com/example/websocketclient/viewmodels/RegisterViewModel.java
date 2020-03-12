@@ -2,6 +2,7 @@ package com.example.websocketclient.viewmodels;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
@@ -11,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.websocketclient.models.ModelRepository;
 import com.example.websocketclient.database.entity.RegisterModel;
+import com.example.websocketclient.models.PlainTextModel;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.MaybeObserver;
@@ -72,6 +74,7 @@ public class RegisterViewModel extends AndroidViewModel {
 
                     @Override
                     public void onSuccess(String result) {
+                        // result == "FIN_LOAD"
                         loadEvent.setValue(result);
                     }
 
@@ -145,15 +148,17 @@ public class RegisterViewModel extends AndroidViewModel {
         RegisterModel registerModel = new RegisterModel(userNameEdit.get(), userPasswordEdit.get());
 
         modelRepository.insertServerDBRegisterModel(registerModel)
-                .subscribe(new CompletableObserver() {
+                .subscribe(new SingleObserver<PlainTextModel>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         compositeDisposable.add(d);
                     }
 
                     @Override
-                    public void onComplete() {
+                    public void onSuccess(PlainTextModel plainTextModel) {
                         storeUserRegisterModelToClient(registerModel);
+                        serverDBEvent.setValue("REG_DONE");
+
                     }
 
                     @Override
@@ -164,29 +169,26 @@ public class RegisterViewModel extends AndroidViewModel {
     }
 
     public void registerButtonClicked() {
+        Log.d("registerChecking", "registerButtonClicked !!!");
         modelRepository.retrofitCheckDuplicateUserName(userNameEdit.get())
-                .subscribe(new SingleObserver<String>() {
+                .subscribe(new SingleObserver<PlainTextModel>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         compositeDisposable.add(d);
                     }
 
                     @Override
-                    public void onSuccess(String res) {
-                        if (res.equals("DUP")) {
-                            retrofitEvent.setValue(res);
+                    public void onSuccess(PlainTextModel res) {
+                        retrofitEvent.setValue(res.getText());
 
-                            userNameEdit.set("");
-                            userPasswordEdit.set("");
-                        }
-                        else {
-                            retrofitEvent.setValue("CHK");
-                        }
+                        Log.d("registerChecking", res.getText());
+
+                        userNameEdit.set("");
+                        userPasswordEdit.set("");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
                     }
                 });
     }

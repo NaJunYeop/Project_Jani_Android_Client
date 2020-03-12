@@ -47,4 +47,10 @@ public class UserProfileActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
 }

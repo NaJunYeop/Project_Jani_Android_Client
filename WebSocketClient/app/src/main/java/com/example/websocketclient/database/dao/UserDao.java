@@ -17,18 +17,6 @@ import io.reactivex.Single;
 
 @Dao
 public interface UserDao {
-
-    /*@Query("SELECT * FROM register_model")
-    Maybe<UserInformationModel> isUserExist();*/
-
-    /*
-    @Query("SELECT * FROM user_information WHERE user_name = :userName")
-    UserInformationModel findByName(String userName);
-    */
-
-   /* @Query("DELETE FROM UserInformationModel")
-    Completable deleteAll();*/
-
     @Query("SELECT * FROM user_information")
     Maybe<List<UserInformationModel>> getUserInformationModels();
 

@@ -18,6 +18,9 @@ public interface RequestModelDao {
     @Query("SELECT * FROM request_model")
     Maybe<List<RequestModel>> getRequestModels();
 
+    @Query("SELECT * FROM request_model WHERE req_sender_name = :senderName")
+    Maybe<RequestModel> getRequestModel(String senderName);
+
     @Insert
     Completable insertRequestModel(RequestModel requestModel);
 

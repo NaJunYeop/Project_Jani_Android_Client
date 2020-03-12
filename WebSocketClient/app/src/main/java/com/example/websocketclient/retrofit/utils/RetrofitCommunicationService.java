@@ -6,6 +6,7 @@ import com.example.websocketclient.models.FriendModel;
 import com.example.websocketclient.database.entity.MessageModel;
 import com.example.websocketclient.database.entity.RequestModel;
 import com.example.websocketclient.database.entity.RegisterModel;
+import com.example.websocketclient.models.PlainTextModel;
 
 import java.util.List;
 
@@ -18,19 +19,19 @@ import retrofit2.http.POST;
 
 public interface RetrofitCommunicationService {
     @POST("/duplication-check")
-    Single<String> userNameDuplicationCheck(@Body String userName);
+    Single<PlainTextModel> userNameDuplicationCheck(@Body String userName);
 
     @POST("/user-registration")
-    Completable registerUserRegisterModelToServer(@Body RegisterModel registerModel);
+    Single<PlainTextModel> registerUserRegisterModelToServer(@Body RegisterModel registerModel);
 
     @POST("/find-user")
-    Maybe<String> findUserInformationModel(@Body String userName);
+    Single<PlainTextModel> findUserInformationModel(@Body String userName);
 
     @POST("/get-user-info")
     Single<UserInformationModel> getUserInformationModel(@Body String userName);
 
-    /*@POST("/find-user")
-    Maybe<RegisterModel> findUserInformation(@Body RegisterModel registerModel);*/
+    @POST("/get-topic-channel")
+    Single<PlainTextModel> getTopicChannel();
 
     @POST("/get-request-model")
     Observable<List<RequestModel>> getRequstModelList(@Body String userName);

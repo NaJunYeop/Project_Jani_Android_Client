@@ -27,7 +27,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="채팅방 추가"
-                    android:textStyle="bold">
+                    android:textStyle="bold"
+                    android:onClick="@{() -> chatRoomListVieWModel.createChatRoomButtonClicked()}">
                 </Button>
 
             </LinearLayout>

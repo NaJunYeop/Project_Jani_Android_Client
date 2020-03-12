@@ -6,6 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.example.websocketclient.database.dao.ChatModelDao;
 import com.example.websocketclient.database.dao.RegisterModelDao;
 import com.example.websocketclient.database.dao.RequestModelDao;
 import com.example.websocketclient.database.dao.UserDao;
@@ -22,13 +23,13 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static AppDatabase getInstance(Context context) {
         if (instance == null) {
-            instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "jani_database_temp").build();
+            instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "pleasetestplzzzzzzzzz").build();
         }
         return instance;
     }
     public static AppDatabase newInstance(Context context) {
         instance = null;
-        instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "jani_database_temp").build();
+        instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "pleasetestplzzzzzzzzz").build();
         return instance;
     }
 
@@ -39,4 +40,5 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract RegisterModelDao registerModelDao();
     public abstract RequestModelDao requestModelDao();
+    public abstract ChatModelDao chatModelDao();
 }
