@@ -1,4 +1,4 @@
-package com.example.websocketclient.views.utils.fragments;
+package com.example.websocketclient.views.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,9 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.websocketclient.R;
 import com.example.websocketclient.databinding.FragmentChatRoomListBinding;
 import com.example.websocketclient.viewmodels.ChatRoomListViewModel;
-import com.example.websocketclient.views.AddChatRoomActivity;
-import com.example.websocketclient.views.ChatRoomActivity;
-import com.example.websocketclient.views.utils.adapters.ChatRoomListAdapter;
+import com.example.websocketclient.views.activities.AddChatRoomActivity;
+import com.example.websocketclient.views.activities.ChatRoomActivity;
+import com.example.websocketclient.views.adapters.ChatRoomListAdapter;
 
 public class ChatRoomListFragment extends Fragment {
     private FragmentChatRoomListBinding fragmentChatRoomListBinding;

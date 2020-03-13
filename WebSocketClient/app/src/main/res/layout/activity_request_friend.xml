@@ -14,7 +14,7 @@
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".views.RequestFriendActivity">
+        tools:context=".views.activities.RequestFriendActivity">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/request_friend_refresh"

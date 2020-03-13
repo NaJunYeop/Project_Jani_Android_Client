@@ -1,4 +1,4 @@
-package com.example.websocketclient.views;
+package com.example.websocketclient.views.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -10,7 +10,7 @@ import android.util.Log;
 import com.example.websocketclient.databinding.ActivityMainBinding;
 import com.example.websocketclient.R;
 import com.example.websocketclient.viewmodels.MainViewModel;
-import com.example.websocketclient.views.utils.adapters.PageAdapter;
+import com.example.websocketclient.views.adapters.PageAdapter;
 import ua.naiksoftware.stomp.dto.LifecycleEvent;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,22 +27,17 @@ public class MainActivity extends AppCompatActivity {
 
         dataBindingInit();
         stompLiveDataInit();
-
     }
 
     public void dataBindingInit() {
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         // set LifecycleOwner
-        activityMainBinding.setMainActivity(this);
         activityMainBinding.setLifecycleOwner(this);
 
-        // Binds MainViewModel.class
-        //mainViewModel = new MainViewModel(this);
+        // MainViewModel.class를 Binding한 Layout에 지정
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         activityMainBinding.setMainViewModel(mainViewModel);
-
-        //mainViewModel.getModelRepository().setInitialRequestModelHashMap();
 
         pageAdapter = new PageAdapter(getSupportFragmentManager(), activityMainBinding.mainTabLayout.getTabCount());
         pageAdapter.setMainViewModel(mainViewModel);

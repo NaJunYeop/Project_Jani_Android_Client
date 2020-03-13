@@ -98,7 +98,7 @@ public class AddChatRoomViewModel extends AndroidViewModel {
                 continue;
             }
             chatRoomName += participantModel.getParticipantUserName();
-            if (i != pSize - 1) {
+            if (i < pSize - 2) {
                 chatRoomName += ", ";
             }
         }

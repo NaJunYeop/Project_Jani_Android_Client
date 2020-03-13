@@ -1,4 +1,4 @@
-package com.example.websocketclient.views;
+package com.example.websocketclient.views.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.example.websocketclient.R;
 import com.example.websocketclient.databinding.ActivityAddFriendBinding;
 import com.example.websocketclient.viewmodels.AddFriendViewModel;
-import com.example.websocketclient.views.utils.dialogs.AddFriendDialog;
+import com.example.websocketclient.views.dialogs.AddFriendDialog;
 import com.google.gson.Gson;
 
 public class AddFriendActivity extends AppCompatActivity {

@@ -33,7 +33,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ua.naiksoftware.stomp.dto.LifecycleEvent;
 
-public class MainViewModel extends AndroidViewModel implements Serializable {
+public class MainViewModel extends AndroidViewModel {
     private final String TAG = "MainViewModelLog";
 
     private Context context;
@@ -54,7 +54,7 @@ public class MainViewModel extends AndroidViewModel implements Serializable {
         // getBaseContext() : 자신의 Context가 아니라 다른 Context를 Access할 때 사용한다.
         // View.getContext() : 현재 실행되고 있는 View의 Context를 Return, this와 같다.
         modelRepository = ModelRepository.getInstance();
-        modelRepository.setReferences(context);
+        //modelRepository.setReferences(context);
         modelRepository.setMainViewModel(this);
 
         createRequestChannel();
@@ -451,8 +451,8 @@ public class MainViewModel extends AndroidViewModel implements Serializable {
     @Override
     protected void onCleared() {
         super.onCleared();
-        compositeDisposable.dispose();
         Log.i("QueueChannelCheck", "MainViewModel : onCleared()");
+        compositeDisposable.dispose();
         modelRepository.stompDisconnectStart(); // 과연 Disconnect 해야 하는가? 에 대한 이해는 조금 더 해 봐야 알 듯.
     }
 }

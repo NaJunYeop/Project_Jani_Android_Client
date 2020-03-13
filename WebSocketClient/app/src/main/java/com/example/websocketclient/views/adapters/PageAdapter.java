@@ -1,21 +1,20 @@
-package com.example.websocketclient.views.utils.adapters;
+package com.example.websocketclient.views.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.example.websocketclient.databinding.FragmentChatRoomListBinding;
 import com.example.websocketclient.databinding.FragmentConfigurationBinding;
 import com.example.websocketclient.databinding.FragmentFriendListBinding;
 import com.example.websocketclient.databinding.FragmentSchedulerBinding;
 import com.example.websocketclient.viewmodels.MainViewModel;
-import com.example.websocketclient.views.utils.fragments.ChatRoomListFragment;
-import com.example.websocketclient.views.utils.fragments.ConfigurationFragment;
-import com.example.websocketclient.views.utils.fragments.FriendListFragment;
-import com.example.websocketclient.views.utils.fragments.SchedulerFragment;
+import com.example.websocketclient.views.fragments.ChatRoomListFragment;
+import com.example.websocketclient.views.fragments.ConfigurationFragment;
+import com.example.websocketclient.views.fragments.FriendListFragment;
+import com.example.websocketclient.views.fragments.SchedulerFragment;
 
 public class PageAdapter extends FragmentPagerAdapter {
     private int numOfTaps;

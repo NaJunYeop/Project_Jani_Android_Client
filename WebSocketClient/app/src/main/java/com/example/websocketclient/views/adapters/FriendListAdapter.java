@@ -1,8 +1,6 @@
-package com.example.websocketclient.views.utils.adapters;
+package com.example.websocketclient.views.adapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;

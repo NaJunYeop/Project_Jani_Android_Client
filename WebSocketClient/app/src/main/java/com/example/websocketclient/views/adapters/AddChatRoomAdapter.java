@@ -1,4 +1,4 @@
-package com.example.websocketclient.views.utils.adapters;
+package com.example.websocketclient.views.adapters;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;

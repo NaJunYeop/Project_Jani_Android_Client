@@ -13,19 +13,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".views.AddChatRoomActivity"></activity>
-        <activity android:name=".views.UserProfileActivity" />
-        <activity android:name=".views.RequestFriendActivity" />
-        <activity android:name=".views.AddFriendActivity" />
-        <activity android:name=".views.ChatRoomActivity" />
-        <activity android:name=".views.RegisterActivity">
+        <activity android:name=".views.activities.AddChatRoomActivity"></activity>
+        <activity android:name=".views.activities.UserProfileActivity" />
+        <activity android:name=".views.activities.RequestFriendActivity" />
+        <activity android:name=".views.activities.AddFriendActivity" />
+        <activity android:name=".views.activities.ChatRoomActivity" />
+        <activity android:name=".views.activities.RegisterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".views.MainActivity" />
+        <activity android:name=".views.activities.MainActivity" />
     </application>
 
 </manifest>

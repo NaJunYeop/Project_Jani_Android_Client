@@ -1,16 +1,14 @@
-package com.example.websocketclient.views;
+package com.example.websocketclient.views.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.websocketclient.R;
-import com.example.websocketclient.databinding.ActivityRequestFriendUnitBinding;
 import com.example.websocketclient.databinding.ActivityUserProfileBinding;
 import com.example.websocketclient.viewmodels.UserProfileViewModel;
 

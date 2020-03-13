@@ -1,4 +1,4 @@
-package com.example.websocketclient.views.utils.viewholders;
+package com.example.websocketclient.views.viewholders;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;

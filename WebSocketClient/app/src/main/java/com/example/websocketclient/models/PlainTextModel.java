@@ -1,7 +1,7 @@
 package com.example.websocketclient.models;
 
 public class PlainTextModel {
-      private String text;
+    private String text;
 
     public PlainTextModel(String text) {
         this.text = text;

@@ -3,14 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
-            name="mainActivity"
-            type="com.example.websocketclient.views.MainActivity" />
-        <variable
             name="mainViewModel"
             type="com.example.websocketclient.viewmodels.MainViewModel" />
-        <variable
-            name="chatRoomAdapter"
-            type="com.example.websocketclient.views.utils.adapters.ChatRoomAdapter" />
     </data>
 
     <LinearLayout

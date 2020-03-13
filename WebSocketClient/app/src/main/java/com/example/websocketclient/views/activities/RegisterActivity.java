@@ -1,4 +1,4 @@
-package com.example.websocketclient.views;
+package com.example.websocketclient.views.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -16,11 +16,7 @@ import com.example.websocketclient.R;
 import com.example.websocketclient.viewmodels.RegisterViewModel;
 
 import io.reactivex.Completable;
-import io.reactivex.CompletableObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class RegisterActivity extends AppCompatActivity {
 

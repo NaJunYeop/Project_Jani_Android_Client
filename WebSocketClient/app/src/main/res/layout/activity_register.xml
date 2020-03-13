@@ -4,7 +4,7 @@
     <data>
         <variable
             name="registerActivity"
-            type="com.example.websocketclient.views.RegisterActivity" />
+            type="com.example.websocketclient.views.activities.RegisterActivity" />
         <variable
             name="registerViewModel"
             type="com.example.websocketclient.viewmodels.RegisterViewModel" />
@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center_horizontal|center_vertical"
-        tools:context=".views.RegisterActivity">
+        tools:context=".views.activities.RegisterActivity">
 
         <LinearLayout
             android:layout_width="match_parent"

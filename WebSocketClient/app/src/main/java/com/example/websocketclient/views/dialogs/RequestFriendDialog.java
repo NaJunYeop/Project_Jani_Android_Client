@@ -1,4 +1,4 @@
-package com.example.websocketclient.views.utils.dialogs;
+package com.example.websocketclient.views.dialogs;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

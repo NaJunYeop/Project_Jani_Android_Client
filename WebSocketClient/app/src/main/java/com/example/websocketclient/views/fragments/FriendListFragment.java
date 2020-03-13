@@ -1,9 +1,8 @@
-package com.example.websocketclient.views.utils.fragments;
+package com.example.websocketclient.views.fragments;
 
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.websocketclient.R;
 import com.example.websocketclient.databinding.FragmentFriendListBinding;
 import com.example.websocketclient.viewmodels.FriendListFragmentViewModel;
-import com.example.websocketclient.views.AddFriendActivity;
-import com.example.websocketclient.views.RequestFriendActivity;
-import com.example.websocketclient.views.UserProfileActivity;
-import com.example.websocketclient.views.utils.adapters.FriendListAdapter;
+import com.example.websocketclient.views.activities.AddFriendActivity;
+import com.example.websocketclient.views.activities.RequestFriendActivity;
+import com.example.websocketclient.views.activities.UserProfileActivity;
+import com.example.websocketclient.views.adapters.FriendListAdapter;
 
 public class FriendListFragment extends Fragment {
 

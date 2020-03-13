@@ -1,4 +1,4 @@
-package com.example.websocketclient.views;
+package com.example.websocketclient.views.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -12,7 +12,7 @@ import android.os.Bundle;
 import com.example.websocketclient.R;
 import com.example.websocketclient.databinding.ActivityAddChatRoomBinding;
 import com.example.websocketclient.viewmodels.AddChatRoomViewModel;
-import com.example.websocketclient.views.utils.adapters.AddChatRoomAdapter;
+import com.example.websocketclient.views.adapters.AddChatRoomAdapter;
 
 public class AddChatRoomActivity extends AppCompatActivity {
 

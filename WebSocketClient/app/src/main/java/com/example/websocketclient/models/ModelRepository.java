@@ -353,20 +353,6 @@ public class ModelRepository {
                 }).observeOn(AndroidSchedulers.mainThread());
     }
 
-    /*public Single<String> insertClientDBChatModel(ChatRoomModel chatRoomModel, MessageModel messageModel, ParticipantModel participantModel) {
-        return Single.zip(
-                insertClientDBChatRoomModel(chatRoomModel),
-                insertClientDBMessageModel(messageModel),
-                insertClientDBParticipantModel(participantModel),
-                new Function3<Integer, Integer, Integer, String>() {
-                    @Override
-                    public String apply(Integer integer, Integer integer2, Integer integer3) throws Exception {
-                        return "CHAT_MODEL_FIN";
-                    }
-                }
-        ).observeOn(AndroidSchedulers.mainThread());
-    }*/
-
     // ============================= Room Databse ==================================================
     public Maybe<RegisterModel> getClientDBRegisterModel() {
         return db.registerModelDao().getUserRegisterModels()

@@ -1,4 +1,4 @@
-package com.example.websocketclient.views;
+package com.example.websocketclient.views.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -11,8 +11,8 @@ import android.os.Bundle;
 import com.example.websocketclient.R;
 import com.example.websocketclient.databinding.ActivityRequestFriendBinding;
 import com.example.websocketclient.viewmodels.RequestFriendViewModel;
-import com.example.websocketclient.views.utils.adapters.RequestFriendAdapter;
-import com.example.websocketclient.views.utils.dialogs.RequestFriendDialog;
+import com.example.websocketclient.views.adapters.RequestFriendAdapter;
+import com.example.websocketclient.views.dialogs.RequestFriendDialog;
 
 public class RequestFriendActivity extends AppCompatActivity {
 
